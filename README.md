@@ -1,4 +1,4 @@
-> Version 0.1.3
+> Version: 0.1.3
 > Last modified: Mon 11 Apr 2016 13:24:43 BST  
 > Licence: GPLv2.0  
 > Developed in: Matlab R2015b   
