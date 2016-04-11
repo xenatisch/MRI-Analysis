@@ -1,0 +1,233 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>MRI T2 Relaxometry Calculator</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-01-07"><meta name="DC.source" content="sandbox.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>MRI T2 Relaxometry Calculator</h1><p>Calculation of T2 in MR imaging:</p><p><img src="sandbox_eq01346957469761857347.png" alt="$$S(TE)=S_{0}~\textup{e}^{-TE/T2}$$"></p><pre class="codeinput"><span class="comment">% nifti_file = openFile('Open NIFTI files', '*.nii', 'NIFTI files (*.nii)');</span>
+<span class="comment">%     nifti_file = '/Users/Pouria/OneDrive/Course Materials/MPhysGB27/Matlab/Coursework/Data/S01-F23-qt2.nii';</span>
+
+<span class="comment">% GUI-wide variable, accissible to other functions in GUI.</span>
+<span class="comment">%     nifti_img = nii_read(nifti_file);</span>
+
+<span class="comment">%     image_size = size(nifti_img);</span>
+
+
+<span class="comment">% Retrieving NifTi image info</span>
+<span class="comment">%     [info, img_dims, data_type] = nii_info(nifti_file);</span>
+
+<span class="comment">%     nif_img = nii_read(nifti_file);</span>
+<span class="comment">%     u=0;</span>
+
+<span class="comment">%     nif_dif = NaN(10, 1);</span>
+
+clear;
+clc;
+
+<span class="comment">% Echo time, $ TE $:</span>
+echo_time__te = [ 13   16   20   25   30   40  50  85 100 150];
+
+<span class="comment">% MR Signal, $ S $:</span>
+mr_signal__s =  [1418 1300 1223 1137 1033 907 775 461 357 173];
+
+ln_mr_signal__s = log(mr_signal__s);
+
+echo_time_len = length(echo_time__te);
+</pre><p>For <img src="sandbox_eq08984225997457563733.png" alt="$n$"> measurements of the MR signal <img src="sandbox_eq13317406717923471355.png" alt="$[S_{1} \dots S_{n}]$"> , corresponding to an <img src="sandbox_eq08984225997457563733.png" alt="$n$"> number of <img src="sandbox_eq05767591624105561146.png" alt="$TE$"> values <img src="sandbox_eq07088638994369284810.png" alt="$[TE_{1} \dots TE_{n}]$"> , it work out as:</p><p><img src="sandbox_eq14260111347909209366.png" alt="$$&#xA;\left[ \matrix {&#xA;   \textup{ln}(S_{1})     \cr&#xA;   \vdots                 \cr&#xA;   \textup{ln}(S_{n})     \cr&#xA;}  \right]&#xA;=&#xA;\left[ \matrix {&#xA;   1        &amp;   TE_{n}    \cr&#xA;   \vdots   &amp;   \vdots    \cr&#xA;   1        &amp;   TE_{nn}   \cr&#xA;}  \right]&#xA;\left[ \matrix {&#xA;   \textup{ln}(S_{0})     \cr&#xA;   -1/T_{2}               \cr&#xA;}  \right]&#xA;$$"></p><p>therefore:</p><p><img src="sandbox_eq07193232393996314774.png" alt="$$&#xA;\left[ \matrix {&#xA;   1        &amp;   TE_{n}    \cr&#xA;   \vdots   &amp;   \vdots    \cr&#xA;   1        &amp;   TE_{n}   \cr&#xA;}  \right]&#xA;$$"></p><pre class="codeinput">matrix__te = [<span class="keyword">...</span>
+                ones(1, echo_time_len); <span class="keyword">...</span>
+                echo_time__te           <span class="keyword">...</span>
+            ] ;
+</pre><p>As <img src="sandbox_eq09915317229224475928.png" alt="$y=XA$">; therefore</p><p><img src="sandbox_eq00697842492732208220.png" alt="$$&#xA;\left[ \matrix {&#xA;   \textup{ln}(S_{0})     \cr&#xA;   -1/T_{2}               \cr&#xA;}  \right]&#xA;= \frac{\textup{ln}(S)}{&#xA;\left[ \matrix {&#xA;   1        &amp;   TE_{n}    \cr&#xA;   \vdots   &amp;   \vdots    \cr&#xA;   1        &amp;   TE_{n}   \cr&#xA;}  \right]&#xA;} $$"></p><pre class="codeinput">mm = ln_mr_signal__s / matrix__te;
+
+<span class="comment">% Initial signal intesity, $ S_{0} $:</span>
+init_signal__s0 = round(exp(mm(1)), 2);
+
+<span class="comment">% Intrinsic $ T2 $</span>
+intrinsic_t2= round(-1/mm(2), 2);
+
+TE_F = transpose(matrix__te) * [log(init_signal__s0); -1/intrinsic_t2];
+
+fit_data = fit(transpose(echo_time__te), transpose(mr_signal__s), <span class="string">'exp1'</span>);
+figure(1)
+hold <span class="string">on</span>
+plot(echo_time__te, mr_signal__s)
+plot(fit_data, <span class="string">'fit'</span>)
+hold <span class="string">off</span>
+
+<span class="comment">% stylishPlot(fit_data, TE, S);</span>
+</pre><img vspace="5" hspace="5" src="sandbox_01.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% MRI T2 Relaxometry Calculator
+% Calculation of T2 in MR imaging:
+%
+% $$S(TE)=S_{0}~\textup{e}^{-TE/T2}$$
+%
+
+
+% nifti_file = openFile('Open NIFTI files', '*.nii', 'NIFTI files (*.nii)');
+%     nifti_file = '/Users/Pouria/OneDrive/Course Materials/MPhysGB27/Matlab/Coursework/Data/S01-F23-qt2.nii';
+
+% GUI-wide variable, accissible to other functions in GUI.
+%     nifti_img = nii_read(nifti_file);
+
+%     image_size = size(nifti_img);
+
+
+% Retrieving NifTi image info
+%     [info, img_dims, data_type] = nii_info(nifti_file);
+
+%     nif_img = nii_read(nifti_file);
+%     u=0;
+
+%     nif_dif = NaN(10, 1);
+
+clear;
+clc;
+
+% Echo time, $ TE $:
+echo_time__te = [ 13   16   20   25   30   40  50  85 100 150];
+
+% MR Signal, $ S $:
+mr_signal__s =  [1418 1300 1223 1137 1033 907 775 461 357 173];
+
+ln_mr_signal__s = log(mr_signal__s);
+
+echo_time_len = length(echo_time__te);
+
+
+%% 
+% For $n$ measurements of the MR signal $[S_{1} \dots S_{n}]$ , corresponding to 
+% an $n$ number of $TE$ values $[TE_{1} \dots TE_{n}]$ , it work out as:
+% 
+% $$ 
+% \left[ \matrix {  
+%    \textup{ln}(S_{1})     \cr
+%    \vdots                 \cr
+%    \textup{ln}(S_{n})     \cr
+% }  \right]  
+% =
+% \left[ \matrix {  
+%    1        &   TE_{n}    \cr
+%    \vdots   &   \vdots    \cr
+%    1        &   TE_{nn}   \cr
+% }  \right] 
+% \left[ \matrix {  
+%    \textup{ln}(S_{0})     \cr
+%    -1/T_{2}               \cr
+% }  \right] 
+% $$
+%
+% therefore:
+%
+% $$
+% \left[ \matrix {  
+%    1        &   TE_{n}    \cr
+%    \vdots   &   \vdots    \cr
+%    1        &   TE_{n}   \cr
+% }  \right] 
+% $$
+%
+
+matrix__te = [...
+                ones(1, echo_time_len); ...
+                echo_time__te           ...
+            ] ;
+
+%%
+% As $y=XA$; therefore 
+%
+% $$ 
+% \left[ \matrix {  
+%    \textup{ln}(S_{0})     \cr
+%    -1/T_{2}               \cr
+% }  \right] 
+% = \frac{\textup{ln}(S)}{
+% \left[ \matrix {  
+%    1        &   TE_{n}    \cr
+%    \vdots   &   \vdots    \cr
+%    1        &   TE_{n}   \cr
+% }  \right] 
+% } $$
+mm = ln_mr_signal__s / matrix__te;
+
+% Initial signal intesity, $ S_{0} $:
+init_signal__s0 = round(exp(mm(1)), 2);
+
+% Intrinsic $ T2 $
+intrinsic_t2= round(-1/mm(2), 2);
+
+TE_F = transpose(matrix__te) * [log(init_signal__s0); -1/intrinsic_t2];
+
+fit_data = fit(transpose(echo_time__te), transpose(mr_signal__s), 'exp1');
+figure(1)
+hold on
+plot(echo_time__te, mr_signal__s)
+plot(fit_data, 'fit')
+hold off
+
+% stylishPlot(fit_data, TE, S);
+
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,460 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>analyse</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-01-31"><meta name="DC.source" content="analyse.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">function</span> [ response ] = analyse( echo_time__TE )
+<span class="comment">%ANALYSE Summary of this function goes here</span>
+<span class="comment">%   Detailed explanation goes here</span>
+
+    OPEN_TITLE = <span class="string">'NifTi files'</span>;
+    OPEN_TYPE  = <span class="string">'*.nii'</span>;
+    OPEN_DESCRIPTION = <span class="string">'NifTi files (*.nii)'</span>;
+
+    WHITE_MATTER = uint8(1);  <span class="comment">% Value for white matter.</span>
+
+
+    [file_names, file_path] = uigetfile({OPEN_TYPE, OPEN_DESCRIPTION}, <span class="keyword">...</span>
+                                         OPEN_TITLE,                   <span class="keyword">...</span>
+                                         <span class="string">'MultiSelect'</span>, <span class="string">'on'</span>);
+
+    <span class="keyword">if</span> not(isa(file_names, <span class="string">'cell'</span>))
+
+        error(<span class="string">'Terminated by the user.'</span>);
+
+    <span class="keyword">end</span>
+
+
+
+    <span class="comment">% Processing the inputs.</span>
+    <span class="keyword">if</span> exist(<span class="string">'echo_time__TE'</span>, <span class="string">'var'</span>)
+
+        properties = processFiles(file_names, file_path, <span class="keyword">...</span>
+                                  WHITE_MATTER, echo_time__TE);
+
+    <span class="keyword">else</span>
+
+        properties = processFiles(file_names, file_path, WHITE_MATTER);
+
+    <span class="keyword">end</span>
+
+
+
+    gab_vector = cell2mat(properties.gab);
+
+
+    <span class="comment">% Event loop.</span>
+
+    question = <span class="string">'How would you like the results to be calculated?'</span>;
+
+    <span class="keyword">while</span> true
+
+        clearvars <span class="string">-except</span> <span class="string">properties</span> <span class="string">question</span> <span class="string">gab_vector</span>;
+
+        <span class="comment">% Construct a questdlg with three options</span>
+        choice = questdlg(question,  <span class="keyword">...</span>
+                          <span class="string">'Results'</span>, <span class="keyword">...</span>
+                          <span class="string">'Gender Segregated'</span>,<span class="string">'Collective'</span>,<span class="string">'Exit'</span>,<span class="string">'Exit'</span>);
+
+        <span class="comment">% Question for the next round.</span>
+        question = sprintf([<span class="string">'All done. Results can be seen through the GUI '</span><span class="keyword">...</span>
+                            <span class="string">'and in the prompt.\nHave another go...\n%s'</span>,   <span class="keyword">...</span>
+                            question]);
+
+        <span class="comment">% Handle response.</span>
+        <span class="keyword">switch</span> choice
+
+            <span class="keyword">case</span> <span class="string">'Gender Segregated'</span>
+                display([<span class="string">'Option: '</span>, choice]);
+
+                <span class="comment">% Males (segregation comparison).</span>
+                gender_mask    = strcmpi(properties.sex,<span class="string">'M'</span>);
+                males_matrix   = gab_vector(gender_mask);
+
+                identifier = <span class="string">'Analysis of male subjects'</span>;
+                display(identifier);
+                [properties.males.corr_coeff, properties.males.t_tests] = <span class="keyword">...</span>
+                    getStats(males_matrix, properties, gender_mask, identifier);
+
+                properties.total_males = sum(gender_mask);
+
+
+                <span class="comment">% Females (segregated comparison).</span>
+                gender_mask    = strcmpi(properties.sex,<span class="string">'F'</span>);
+                females_matrix = gab_vector(gender_mask);
+
+                identifier = <span class="string">'Analysis of female subjects'</span>;
+                display(identifier);
+                [properties.females.corr_coeff, properties.females.t_tests] = <span class="keyword">...</span>
+                    getStats(females_matrix, properties, gender_mask, identifier);
+
+                properties.total_females = sum(gender_mask);
+
+
+                <span class="keyword">continue</span>;
+
+
+            <span class="keyword">case</span> <span class="string">'Collective'</span>
+
+                identifier = <span class="string">'Collective analysis'</span>;
+                display(identifier);
+
+                <span class="comment">% All subjects (collective comparison).</span>
+                [properties.collective.corr_coeff, properties.collective.t_tests] = <span class="keyword">...</span>
+                    getStats(gab_vector, properties, identifier);
+
+
+                <span class="keyword">continue</span>;
+
+
+            <span class="keyword">case</span> <span class="string">'Exit'</span>
+
+                <span class="comment">% Make sure they want to exit.</span>
+                exit_message = <span class="keyword">...</span>
+                    questdlg(sprintf(                                        <span class="keyword">...</span>
+                                     [<span class="string">'Are you sure you want to exit?\n'</span>,    <span class="keyword">...</span>
+                                      <span class="string">'Displays must be closed manually.'</span>]), <span class="keyword">...</span>
+                                      <span class="string">'Results'</span>,                             <span class="keyword">...</span>
+                                      <span class="string">'Yes'</span>,<span class="string">'No'</span>,<span class="string">'Cancel'</span>,<span class="string">'Cancel'</span>);
+
+                <span class="comment">% Handle response</span>
+                <span class="keyword">switch</span> exit_message
+
+                    <span class="keyword">case</span> <span class="string">'Yes'</span>
+                        fprintf([<span class="string">'\nThe programme was terminated by '</span>,<span class="keyword">...</span>
+                                 <span class="string">'the user.\n\n'</span>]);
+
+                        response = properties;
+
+                        <span class="keyword">return</span>;
+
+                    <span class="keyword">case</span> <span class="string">'No'</span>
+                        <span class="keyword">continue</span>;
+
+                    <span class="keyword">case</span> <span class="string">'Cancel'</span>
+                        <span class="keyword">continue</span>;
+
+                <span class="keyword">end</span>  <span class="comment">% exit_message</span>
+
+        <span class="keyword">end</span>  <span class="comment">% choice</span>
+
+    <span class="keyword">end</span>  <span class="comment">% event loop.</span>
+
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">
+
+Files were processed in 28.84 seconds.
+
+
+identifier =
+
+Collective analysis
+
+
+------------------------------------------------------------------------------------------------------------
+
+Correlation Coefficients:
+
+ans = 
+
+          T2_GAB               Volume_GAB     
+    __________________    ____________________
+
+          1    0.51104           1    0.020447
+    0.51104          1    0.020447           1
+
+
+------------------------------------------------------------------------------------------------------------
+
+T-test statistics:
+
+ans = 
+
+              Hypothesis     p_value          Confidence        T_test     Deg_Freedom    Stan_Dev
+              __________    __________    __________________    _______    ___________    ________
+
+    Volume    1             3.0355e-07     1704.2     3549.3     5.6814    68              1927   
+    T2        0                0.11936    -1.7933    0.20986    -1.5774    68             2.092   
+
+
+------------------------------------------------------------------------------------------------------------
+
+Option: Gender Segregated
+
+identifier =
+
+Analysis of male subjects
+
+
+------------------------------------------------------------------------------------------------------------
+
+Correlation Coefficients:
+
+ans = 
+
+            T2_GAB                  Volume_GAB      
+    ______________________    ______________________
+
+            1    -0.015848            1    -0.021235
+    -0.015848            1    -0.021235            1
+
+
+------------------------------------------------------------------------------------------------------------
+
+T-test statistics:
+
+ans = 
+
+              Hypothesis     p_value          Confidence        T_test     Deg_Freedom    Stan_Dev
+              __________    __________    __________________    _______    ___________    ________
+
+    Volume    1             1.2196e-05     1769.3     3929.4     5.4334    25             1361.5  
+    T2        0                0.77547    -1.5383     2.0391    0.28834    25             2.2549  
+
+
+------------------------------------------------------------------------------------------------------------
+
+
+identifier =
+
+Analysis of female subjects
+
+
+------------------------------------------------------------------------------------------------------------
+
+Correlation Coefficients:
+
+ans = 
+
+          T2_GAB              Volume_GAB    
+    __________________    __________________
+
+          1    0.49163          1    0.18517
+    0.49163          1    0.18517          1
+
+
+------------------------------------------------------------------------------------------------------------
+
+T-test statistics:
+
+ans = 
+
+              Hypothesis     p_value          Confidence         T_test     Deg_Freedom    Stan_Dev
+              __________    __________    ___________________    _______    ___________    ________
+
+    Volume    1             0.00040236     1028.6      3294.3     3.8532    41             1814.7  
+    T2        1               0.025908    -2.6141    -0.17621    -2.3115    41             1.9526  
+
+
+------------------------------------------------------------------------------------------------------------
+
+
+The programme was terminated by the user.
+
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+function [ response ] = analyse( echo_time__TE )
+%ANALYSE Summary of this function goes here
+%   Detailed explanation goes here
+
+    OPEN_TITLE = 'NifTi files';
+    OPEN_TYPE  = '*.nii';
+    OPEN_DESCRIPTION = 'NifTi files (*.nii)';
+
+    WHITE_MATTER = uint8(1);  % Value for white matter. 
+
+
+    [file_names, file_path] = uigetfile({OPEN_TYPE, OPEN_DESCRIPTION}, ...
+                                         OPEN_TITLE,                   ...
+                                         'MultiSelect', 'on');
+
+    if not(isa(file_names, 'cell'))
+        
+        error('Terminated by the user.');
+        
+    end
+
+
+
+    % Processing the inputs. 
+    if exist('echo_time__TE', 'var')
+        
+        properties = processFiles(file_names, file_path, ...
+                                  WHITE_MATTER, echo_time__TE);
+                              
+    else
+        
+        properties = processFiles(file_names, file_path, WHITE_MATTER);
+        
+    end
+
+
+
+    gab_vector = cell2mat(properties.gab);
+
+
+    % Event loop.
+
+    question = 'How would you like the results to be calculated?';
+
+    while true
+
+        clearvars -except properties question gab_vector;
+
+        % Construct a questdlg with three options
+        choice = questdlg(question,  ...
+                          'Results', ...
+                          'Gender Segregated','Collective','Exit','Exit');
+
+        % Question for the next round.
+        question = sprintf(['All done. Results can be seen through the GUI '...
+                            'and in the prompt.\nHave another go...\n%s',   ...  
+                            question]);
+
+        % Handle response.
+        switch choice
+
+            case 'Gender Segregated'
+                display(['Option: ', choice]);
+
+                % Males (segregation comparison).
+                gender_mask    = strcmpi(properties.sex,'M');
+                males_matrix   = gab_vector(gender_mask);
+
+                identifier = 'Analysis of male subjects';
+                display(identifier);
+                [properties.males.corr_coeff, properties.males.t_tests] = ...
+                    getStats(males_matrix, properties, gender_mask, identifier);
+                
+                properties.total_males = sum(gender_mask);
+                
+                
+                % Females (segregated comparison).
+                gender_mask    = strcmpi(properties.sex,'F');
+                females_matrix = gab_vector(gender_mask);
+
+                identifier = 'Analysis of female subjects';
+                display(identifier);
+                [properties.females.corr_coeff, properties.females.t_tests] = ...
+                    getStats(females_matrix, properties, gender_mask, identifier);
+                
+                properties.total_females = sum(gender_mask);
+
+                
+                continue;
+
+                
+            case 'Collective'
+                
+                identifier = 'Collective analysis';
+                display(identifier); 
+                
+                % All subjects (collective comparison). 
+                [properties.collective.corr_coeff, properties.collective.t_tests] = ...
+                    getStats(gab_vector, properties, identifier);
+
+                
+                continue;
+                
+
+            case 'Exit'
+                
+                % Make sure they want to exit.
+                exit_message = ...
+                    questdlg(sprintf(                                        ...
+                                     ['Are you sure you want to exit?\n',    ...
+                                      'Displays must be closed manually.']), ...
+                                      'Results',                             ...
+                                      'Yes','No','Cancel','Cancel');
+
+                % Handle response
+                switch exit_message
+
+                    case 'Yes'
+                        fprintf(['\nThe programme was terminated by ',...
+                                 'the user.\n\n']);
+                             
+                        response = properties;
+                        
+                        return;
+                        
+                    case 'No'
+                        continue;
+
+                    case 'Cancel'
+                        continue;
+
+                end  % exit_message
+
+        end  % choice
+
+    end  % event loop.
+
+end
+
+
+##### SOURCE END #####
+--></body></html>

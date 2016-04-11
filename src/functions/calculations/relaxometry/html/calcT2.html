@@ -1,0 +1,493 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Magnetic Resonance Imaging T2 Relaxometry Calculator</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-01-24"><meta name="DC.source" content="calcT2.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Magnetic Resonance Imaging T2 Relaxometry Calculator</h1><!--introduction--><p>Calculation of T2 in MR imaging using exponential decay:</p><p><img src="calcT2_eq08493886094132290738.png" alt="$$ S(TE)=S_{0}~\textup{e}^{-TE/T2} $$"></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Important notice on nomenclature</a></li><li><a href="#2">Requirements</a></li><li><a href="#3">Inputs</a></li><li><a href="#4">Outputs</a></li><li><a href="#6">Constants</a></li><li><a href="#7">Testing the inputs</a></li><li><a href="#8">Calculations</a></li><li><a href="#12">Initial signal intesity, <img src="calcT2_eq17432148257044459531.png" alt="$S_{0}$">:</a></li><li><a href="#15">Regression</a></li><li><a href="#16">Exponential fit</a></li><li><a href="#21">Graph</a></li><li><a href="#22">Output</a></li></ul></div><h2>Important notice on nomenclature<a name="1"></a></h2><p>This function is implemented on the basis of a mathematical equation. The coding convention is PEP8 (Python convention) with slight modifications to facilitate the understanding of mathematical arguments. As such, the notation <tt>ABC__X</tt> has been employed, where <tt>ABC</tt> is the name of the variables, and <tt>__X</tt> represents the variable name in the mathematical equation.</p><h2>Requirements<a name="2"></a></h2><p>This function requires <tt>stylishPlot.m</tt> to be available in order to plot the graph.</p><h2>Inputs<a name="3"></a></h2><p><tt>echo_time__TE</tt> must be a vector of the echo times (TE), of type <tt>single</tt> or <tt>double</tt>.</p><p><tt>mr_signal__S</tt> must be a vector of the magnetic resonance signals (S), of type <tt>single</tt> or <tt>double</tt>.</p><h2>Outputs<a name="4"></a></h2><p><tt>response</tt>, which is an object of the class <tt>struct</tt>, containing:</p><p><tt>response.T2_value</tt> which is the estimated T2 value.</p><p><tt>response.S0_value</tt> which is the calculated S0 value.</p><p><tt>response.fit_equation</tt> which contains the equation for the line of best fit.</p><p><tt>response.plot_handle</tt> which is the handle to the graph.</p><pre class="codeinput"><span class="keyword">function</span> [ response ] = calcT2( echo_time__TE, mr_signal__S )
+</pre><pre class="codeinput"><span class="comment">%CALCT2 Calculates the MR T2 Relaxometry value, and plots the data.</span>
+<span class="comment">%       The function takes two vectors, and calculates the T2 relaxometry</span>
+<span class="comment">%       value by estimating T2, and subsequently S0 by calculating the</span>
+<span class="comment">%       exponential decay.</span>
+<span class="comment">%</span>
+<span class="comment">%       Note: Precision of this function is limited to type |single|</span>
+<span class="comment">%             capacity, even if the input vectors are passed as |double|.</span>
+<span class="comment">%</span>
+<span class="comment">%</span>
+<span class="comment">%   REQUIRES: |stylishPlot.m|</span>
+<span class="comment">%</span>
+<span class="comment">%   INPUT</span>
+<span class="comment">%   =======================================================================</span>
+<span class="comment">%   echo_time__TE  Vector of the echo times (TE), of type |single| or</span>
+<span class="comment">%                  |double|.</span>
+<span class="comment">%</span>
+<span class="comment">%   mr_signal__S   Vector of the magnetic resonance signals (S), of type</span>
+<span class="comment">%                  |single| or |double|.</span>
+<span class="comment">%</span>
+<span class="comment">%</span>
+<span class="comment">%   RETURN</span>
+<span class="comment">%   =======================================================================</span>
+<span class="comment">%   response       Object of the class |struct|, containing:</span>
+<span class="comment">%                     |response.T2_value|     estimated T2 value.</span>
+<span class="comment">%                     |response.S0_value|     calculated S0 value.</span>
+<span class="comment">%                     |response.fit_equation| equation for the line of best fit.</span>
+<span class="comment">%                     |response.plot_handle|  handle to the graph.</span>
+<span class="comment">%</span>
+<span class="comment">%</span>
+<span class="comment">%==========================================================================</span>
+<span class="comment">% author            Pouria Hadjibagheri</span>
+<span class="comment">% last modified     5 Jan 2015</span>
+<span class="comment">% matlab version    MATLAB R2015b</span>
+<span class="comment">% Licence           GPLv2.0</span>
+<span class="comment">% Coding convention PEP8: https://www.python.org/dev/peps/pep-0008/</span>
+<span class="comment">%==========================================================================</span>
+<span class="comment">%</span>
+</pre><h2>Constants<a name="6"></a></h2><p>These are held in the memory for as long as the programme is open. This is for added efficiency upon repeat calculations and optimisation.</p><pre class="codeinput"><span class="keyword">persistent</span> INDEX__S0;           <span class="comment">% Matrix index for S0.</span>
+<span class="keyword">persistent</span> INDEX__T2;           <span class="comment">% Matrix index for T2.</span>
+<span class="keyword">persistent</span> DECIMAL_PLACES;      <span class="comment">% Round values to |DECIMAL_PLACES|.</span>
+<span class="keyword">persistent</span> TIME_INIT;           <span class="comment">% Initial time = 0.</span>
+<span class="keyword">persistent</span> TIME_FINAL;          <span class="comment">% Maximum time displayed in the graph.</span>
+<span class="keyword">persistent</span> MIN_SIGNAL;          <span class="comment">% Minimum signal; signal is always &gt;= 0.</span>
+<span class="keyword">persistent</span> MAX_SIGNAL_DISPLAY;  <span class="comment">% Maximum signal displayed in the graph.</span>
+
+<span class="comment">% If these conditions apply to one constant, they apply to all of them.</span>
+<span class="comment">% If either condition is true, the constants need to be initiated.</span>
+<span class="keyword">if</span> isempty(INDEX__S0)
+
+    INDEX__S0 = uint8(1);
+    INDEX__T2 = uint8(2);
+    DECIMAL_PLACES = uint8(2);
+    TIME_INIT = uint8(0);
+    TIME_FINAL = uint8(150);
+    MIN_SIGNAL = single(0);
+    MAX_SIGNAL_DISPLAY = uint16(1500);
+
+<span class="keyword">end</span>
+</pre><h2>Testing the inputs<a name="7"></a></h2><p>Asserting the validity of the inputs by testing their types. All inputs must be vectors, and objects of the class <tt>signle</tt> or the class <tt>double</tt>.</p><pre class="codeinput"><span class="keyword">try</span>
+
+    assert(isa(echo_time__TE, <span class="string">'single'</span>) || isa(echo_time__TE, <span class="string">'double'</span>), class(echo_time__TE));
+    assert(isa(mr_signal__S , <span class="string">'single'</span>) || isa(mr_signal__S , <span class="string">'double'</span>), class(mr_signal__S));
+
+<span class="keyword">catch</span> exception
+
+    error(sprintf([<span class="string">'\n&gt; Type Error\n\n'</span><span class="keyword">...</span>
+             <span class="string">'Invalid input. The function expects two inputs as '</span><span class="keyword">...</span>
+             <span class="string">'vectors, both of which must be of type |single| or '</span>  <span class="keyword">...</span>
+             <span class="string">'|double|.\nInstead, got arguments of type:\n %s\n%s'</span>], <span class="keyword">...</span>
+             exception.identifier, exception.message)); <span class="comment">%#ok&lt;SPERR&gt;</span>
+
+
+<span class="keyword">end</span>
+</pre><h2>Calculations<a name="8"></a></h2><p>Calculating <img src="calcT2_eq07588608352421757980.png" alt="$\textup{ln}(signal)$">.</p><pre class="codeinput">log_mr_signal__S = single(log(mr_signal__S));
+</pre><p>Storing the size of the data (applies to both signal and time).</p><pre class="codeinput">echo_time_size = uint8(size(echo_time__TE));
+</pre><p>For <img src="calcT2_eq08984225997457563733.png" alt="$n$"> measurements of the MR signal <img src="calcT2_eq13317406717923471355.png" alt="$[S_{1} \dots S_{n}]$"> , corresponding to an <img src="calcT2_eq08984225997457563733.png" alt="$n$"> number of <img src="calcT2_eq05767591624105561146.png" alt="$TE$"> values <img src="calcT2_eq07088638994369284810.png" alt="$[TE_{1} \dots TE_{n}]$"> , it work out as:</p><p><img src="calcT2_eq14260111347909209366.png" alt="$$&#xA;\left[ \matrix {&#xA;   \textup{ln}(S_{1})     \cr&#xA;   \vdots                 \cr&#xA;   \textup{ln}(S_{n})     \cr&#xA;}  \right]&#xA;=&#xA;\left[ \matrix {&#xA;   1        &amp;   TE_{n}    \cr&#xA;   \vdots   &amp;   \vdots    \cr&#xA;   1        &amp;   TE_{nn}   \cr&#xA;}  \right]&#xA;\left[ \matrix {&#xA;   \textup{ln}(S_{0})     \cr&#xA;   -1/T_{2}               \cr&#xA;}  \right]&#xA;$$"></p><p>therefore:</p><p><img src="calcT2_eq04744107725742187719.png" alt="$$&#xA;\left[ \matrix {&#xA;   1        &amp;   TE_{n}    \cr&#xA;   \vdots   &amp;   \vdots    \cr&#xA;   1        &amp;   TE_{n}    \cr&#xA;}  \right]&#xA;$$"></p><pre class="codeinput">matrix__TE = single([<span class="keyword">...</span>
+                        ones(echo_time_size); <span class="keyword">...</span>
+                        echo_time__TE         <span class="keyword">...</span>
+                    ]);
+</pre><p>As <img src="calcT2_eq09915317229224475928.png" alt="$y=XA$">; therefore</p><p><img src="calcT2_eq02482710962975657265.png" alt="$$&#xA;\left[ \matrix {&#xA;       \textup{ln}(S_{0})     \cr&#xA;       -1/T_{2}               \cr&#xA;}  \right]&#xA;= \frac{\textup{ln}(S)}{&#xA;\left[ \matrix {&#xA;       1        &amp;   TE_{n}    \cr&#xA;       \vdots   &amp;   \vdots    \cr&#xA;       1        &amp;   TE_{n}    \cr&#xA;}  \right]&#xA;} $$"></p><pre class="codeinput">matrix__S0__T2 = single(log_mr_signal__S / matrix__TE);
+</pre><h2>Initial signal intesity, <img src="calcT2_eq17432148257044459531.png" alt="$S_{0}$">:<a name="12"></a></h2><pre class="codeinput">init_signal__S0 = exp(matrix__S0__T2(INDEX__S0));
+
+<span class="comment">% Rounded to the specified numer of decimal places.</span>
+<span class="comment">% Round number incremented by 1 to account for changes. This is becase</span>
+<span class="comment">% There is no exact representation in floating point for decimal places,</span>
+<span class="comment">% except for 0.25, 0.50, and 0.75. This applies unless the number is not</span>
+<span class="comment">% complex or the floating points don't reach the maximum space in the memory.</span>
+round__S0 = round(init_signal__S0, DECIMAL_PLACES+1);
+</pre><p>Intrinsic <img src="calcT2_eq10528785774321797459.png" alt="$T2$"></p><pre class="codeinput">intrinsic__T2 = single(-1/matrix__S0__T2(INDEX__T2));
+
+<span class="comment">% Rounded to the specified number of decimal places.</span>
+round__T2 = single(round(intrinsic__T2, DECIMAL_PLACES));
+</pre><p>Displaying the calculated value of T2 to the specified decimal places based on the estimations.</p><pre class="codeinput">fprintf(<span class="string">'\n T2 Relaxometry value: %0.2f \n\n'</span>, round__T2);
+</pre><pre class="codeoutput">
+ T2 Relaxometry value: 65.84 
+
+</pre><h2>Regression<a name="15"></a></h2><p>Calculating the line of best fit.</p><pre class="codeinput"><span class="comment">% Only takes objects of the class |double| as an input.</span>
+[x_data__T, y_data__S] = prepareCurveData(double([0 echo_time__TE]), <span class="keyword">...</span>
+                                    double([round__S0 mr_signal__S])<span class="keyword">...</span>
+                                    );
+</pre><h2>Exponential fit<a name="16"></a></h2><p>Calculating a line of best fit through a non-linear least squares method.</p><p><img src="calcT2_eq18008456927951266552.png" alt="$$&#xA;f(x) = a \times{\textup{e}^{(b*x)}}&#xA;$$"></p><p>Setting up the <tt>fittype</tt> and its options.</p><pre class="codeinput">fit_obj = fittype(<span class="string">'exp1'</span>);  <span class="comment">% Exponential equation with number of terms = 1.</span>
+</pre><p>Setting up the options for the fit object.</p><pre class="codeinput">fit_options = fitoptions(<span class="string">'Method'</span>, <span class="keyword">...</span>
+                         <span class="string">'NonlinearLeastSquares'</span>);  <span class="comment">% Non-linear least squares.</span>
+fit_options.StartPoint = single([round__S0 0]);     <span class="comment">% Starting point of the fit.</span>
+fit_options.Display = <span class="string">'Off'</span>;                        <span class="comment">% To be plotted later.</span>
+</pre><p>Fitting the data and retrieving the equation.</p><pre class="codeinput">[fit_equation, ~] = fit(x_data__T, y_data__S, fit_obj, fit_options);
+</pre><p>Calculating data to plot the line of best fit.</p><pre class="codeinput"><span class="comment">% |linspace| only takes |single| or |double| as input.</span>
+fit_x__te = single(linspace(MIN_SIGNAL, round__S0, round__S0));
+
+<span class="comment">% Using the equation to create data for the line of best fit.</span>
+fit_y__s = fit_equation(fit_x__te);
+</pre><h2>Graph<a name="21"></a></h2><p>Plotting the graph and setting the axes limits.</p><pre class="codeinput"><span class="comment">% Plotting a styled graph.</span>
+stylishPlot(x_data__T, y_data__S, fit_x__te, fit_y__s, round__T2);
+
+<span class="comment">% Plot axes limits.</span>
+current_plot = gca;                                   <span class="comment">% Taking the current graph.</span>
+current_plot.YLim = [MIN_SIGNAL MAX_SIGNAL_DISPLAY];  <span class="comment">% Y-axis.</span>
+current_plot.XLim = [TIME_INIT TIME_FINAL];           <span class="comment">% X-axis.</span>
+</pre><img vspace="5" hspace="5" src="calcT2_01.png" alt=""> <h2>Output<a name="22"></a></h2><p>Return args. See the intro for more info.</p><pre class="codeinput">response = struct(<span class="string">'T2_value'</span>, round__T2, <span class="keyword">...</span>
+                  <span class="string">'S0_value'</span>, round__S0, <span class="keyword">...</span>
+                  <span class="string">'fit_equation'</span>, fit_equation, <span class="keyword">...</span>
+                  <span class="string">'plot_handle'</span>, current_plot);
+</pre><pre class="codeinput"><span class="keyword">end</span>
+</pre><pre class="codeoutput">
+ans = 
+
+        T2_value: 65.84
+        S0_value: 1664.83
+    fit_equation: [1x1 cfit]
+     plot_handle: [1x1 Axes]
+
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Magnetic Resonance Imaging T2 Relaxometry Calculator
+% Calculation of T2 in MR imaging using exponential decay:
+%
+% $$ S(TE)=S_{0}~\textup{e}^{-TE/T2} $$
+%
+%% Important notice on nomenclature 
+% This function is implemented on the basis of a mathematical 
+% equation. The coding convention is PEP8 (Python convention)
+% with slight modifications to facilitate the understanding of
+% mathematical arguments. As such, the notation |ABC__X| has
+% been employed, where |ABC| is the name of the variables, and
+% |__X| represents the variable name in the mathematical equation.
+%
+%% Requirements 
+% This function requires |stylishPlot.m| to be available in order to plot the
+% graph. 
+%
+%% Inputs
+% |echo_time__TE| must be a vector of the echo times (TE), of type |single| or 
+% |double|.
+%
+% |mr_signal__S| must be a vector of the magnetic resonance signals (S), of type
+% |single| or |double|. 
+%
+%% Outputs
+% |response|, which is an object of the class |struct|, containing:
+% 
+% |response.T2_value| which is the estimated T2 value.
+%
+% |response.S0_value| which is the calculated S0 value. 
+%
+% |response.fit_equation| which contains the equation for the line of best fit. 
+% 
+% |response.plot_handle| which is the handle to the graph.
+%
+
+function [ response ] = calcT2( echo_time__TE, mr_signal__S )
+%CALCT2 Calculates the MR T2 Relaxometry value, and plots the data.
+%       The function takes two vectors, and calculates the T2 relaxometry 
+%       value by estimating T2, and subsequently S0 by calculating the 
+%       exponential decay. 
+%
+%       Note: Precision of this function is limited to type |single| 
+%             capacity, even if the input vectors are passed as |double|. 
+%
+%  
+%   REQUIRES: |stylishPlot.m|
+%
+%   INPUT
+%   =======================================================================
+%   echo_time__TE  Vector of the echo times (TE), of type |single| or 
+%                  |double|.
+%
+%   mr_signal__S   Vector of the magnetic resonance signals (S), of type
+%                  |single| or |double|. 
+%
+%
+%   RETURN
+%   =======================================================================
+%   response       Object of the class |struct|, containing:
+%                     |response.T2_value|     estimated T2 value.
+%                     |response.S0_value|     calculated S0 value. 
+%                     |response.fit_equation| equation for the line of best fit. 
+%                     |response.plot_handle|  handle to the graph.
+%
+%
+%==========================================================================
+% author            Pouria Hadjibagheri
+% last modified     5 Jan 2015
+% matlab version    MATLAB R2015b
+% Licence           GPLv2.0
+% Coding convention PEP8: https://www.python.org/dev/peps/pep-0008/
+%==========================================================================
+%      
+
+
+%% Constants
+% These are held in the memory for as long as the programme is open. This is 
+% for added efficiency upon repeat calculations and optimisation.
+
+persistent INDEX__S0;           % Matrix index for S0.
+persistent INDEX__T2;           % Matrix index for T2.
+persistent DECIMAL_PLACES;      % Round values to |DECIMAL_PLACES|.
+persistent TIME_INIT;           % Initial time = 0.
+persistent TIME_FINAL;          % Maximum time displayed in the graph. 
+persistent MIN_SIGNAL;          % Minimum signal; signal is always >= 0.
+persistent MAX_SIGNAL_DISPLAY;  % Maximum signal displayed in the graph. 
+
+% If these conditions apply to one constant, they apply to all of them.
+% If either condition is true, the constants need to be initiated. 
+if isempty(INDEX__S0)
+    
+    INDEX__S0 = uint8(1);               
+    INDEX__T2 = uint8(2);               
+    DECIMAL_PLACES = uint8(2);          
+    TIME_INIT = uint8(0);               
+    TIME_FINAL = uint8(150);            
+    MIN_SIGNAL = single(0);              
+    MAX_SIGNAL_DISPLAY = uint16(1500);  
+
+end
+
+%% Testing the inputs
+% Asserting the validity of the inputs by testing their types. All inputs must
+% be vectors, and objects of the class |signle| or the class |double|. 
+try
+    
+    assert(isa(echo_time__TE, 'single') || isa(echo_time__TE, 'double'), class(echo_time__TE));
+    assert(isa(mr_signal__S , 'single') || isa(mr_signal__S , 'double'), class(mr_signal__S));
+    
+catch exception
+    
+    error(sprintf(['\n> Type Error\n\n'...
+             'Invalid input. The function expects two inputs as '...
+             'vectors, both of which must be of type |single| or '  ...
+             '|double|.\nInstead, got arguments of type:\n %s\n%s'], ...
+             exception.identifier, exception.message)); %#ok<SPERR>
+         
+         
+end
+
+%% Calculations
+% Calculating $\textup{ln}(signal)$.
+
+log_mr_signal__S = single(log(mr_signal__S));
+
+
+%%
+% Storing the size of the data (applies to both signal and time). 
+echo_time_size = uint8(size(echo_time__TE));
+
+
+%% 
+% For $n$ measurements of the MR signal $[S_{1} \dots S_{n}]$ , corresponding to 
+% an $n$ number of $TE$ values $[TE_{1} \dots TE_{n}]$ , it work out as:
+% 
+% $$ 
+% \left[ \matrix {  
+%    \textup{ln}(S_{1})     \cr
+%    \vdots                 \cr
+%    \textup{ln}(S_{n})     \cr
+% }  \right]  
+% =
+% \left[ \matrix {  
+%    1        &   TE_{n}    \cr
+%    \vdots   &   \vdots    \cr
+%    1        &   TE_{nn}   \cr
+% }  \right] 
+% \left[ \matrix {  
+%    \textup{ln}(S_{0})     \cr
+%    -1/T_{2}               \cr
+% }  \right] 
+% $$
+%
+% therefore:
+%
+% $$
+% \left[ \matrix {  
+%    1        &   TE_{n}    \cr
+%    \vdots   &   \vdots    \cr
+%    1        &   TE_{n}    \cr
+% }  \right] 
+% $$
+%
+
+matrix__TE = single([...
+                        ones(echo_time_size); ...
+                        echo_time__TE         ...
+                    ]);
+
+                
+                
+%%
+% As $y=XA$; therefore 
+%
+% $$ 
+% \left[ \matrix {  
+%        \textup{ln}(S_{0})     \cr
+%        -1/T_{2}               \cr
+% }  \right] 
+% = \frac{\textup{ln}(S)}{
+% \left[ \matrix {  
+%        1        &   TE_{n}    \cr
+%        \vdots   &   \vdots    \cr
+%        1        &   TE_{n}    \cr
+% }  \right] 
+% } $$
+
+matrix__S0__T2 = single(log_mr_signal__S / matrix__TE);
+
+
+
+%% Initial signal intesity, $S_{0}$:
+init_signal__S0 = exp(matrix__S0__T2(INDEX__S0));
+
+% Rounded to the specified numer of decimal places.
+% Round number incremented by 1 to account for changes. This is becase
+% There is no exact representation in floating point for decimal places, 
+% except for 0.25, 0.50, and 0.75. This applies unless the number is not 
+% complex or the floating points don't reach the maximum space in the memory. 
+round__S0 = round(init_signal__S0, DECIMAL_PLACES+1);
+
+
+
+%%
+% Intrinsic $T2$
+intrinsic__T2 = single(-1/matrix__S0__T2(INDEX__T2));
+
+% Rounded to the specified number of decimal places.
+round__T2 = single(round(intrinsic__T2, DECIMAL_PLACES));
+
+%%
+% Displaying the calculated value of T2 to the specified decimal places based 
+% on the estimations. 
+fprintf('\n T2 Relaxometry value: %0.2f \n\n', round__T2);
+
+
+%% Regression
+% Calculating the line of best fit.
+
+% Only takes objects of the class |double| as an input. 
+[x_data__T, y_data__S] = prepareCurveData(double([0 echo_time__TE]), ...
+                                    double([round__S0 mr_signal__S])...
+                                    );
+
+                                
+    
+%% Exponential fit
+% Calculating a line of best fit through a non-linear least squares method. 
+%
+% $$
+% f(x) = a \times{\textup{e}^{(b*x)}}
+% $$
+                               
+%%
+% Setting up the |fittype| and its options.
+fit_obj = fittype('exp1');  % Exponential equation with number of terms = 1. 
+
+
+
+
+%%
+% Setting up the options for the fit object.
+fit_options = fitoptions('Method', ...
+                         'NonlinearLeastSquares');  % Non-linear least squares.
+fit_options.StartPoint = single([round__S0 0]);     % Starting point of the fit. 
+fit_options.Display = 'Off';                        % To be plotted later.
+
+
+%%
+% Fitting the data and retrieving the equation.
+[fit_equation, ~] = fit(x_data__T, y_data__S, fit_obj, fit_options);
+
+
+%% 
+% Calculating data to plot the line of best fit.
+
+% |linspace| only takes |single| or |double| as input. 
+fit_x__te = single(linspace(MIN_SIGNAL, round__S0, round__S0));
+
+% Using the equation to create data for the line of best fit. 
+fit_y__s = fit_equation(fit_x__te);
+
+
+
+%% Graph
+% Plotting the graph and setting the axes limits. 
+
+% Plotting a styled graph. 
+stylishPlot(x_data__T, y_data__S, fit_x__te, fit_y__s, round__T2);
+
+% Plot axes limits. 
+current_plot = gca;                                   % Taking the current graph.
+current_plot.YLim = [MIN_SIGNAL MAX_SIGNAL_DISPLAY];  % Y-axis.
+current_plot.XLim = [TIME_INIT TIME_FINAL];           % X-axis.
+
+
+%% Output
+%
+% Return args. See the intro for more info. 
+response = struct('T2_value', round__T2, ...
+                  'S0_value', round__S0, ...
+                  'fit_equation', fit_equation, ...
+                  'plot_handle', current_plot);
+
+              
+end
+
+
+##### SOURCE END #####
+--></body></html>

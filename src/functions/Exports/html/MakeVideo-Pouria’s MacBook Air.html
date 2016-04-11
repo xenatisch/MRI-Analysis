@@ -1,0 +1,1324 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Make Videos</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-12-28"><meta name="DC.source" content="MakeVideo.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Make Videos</h1><!--introduction--><p>This is a comprehensive module for creating videos from slides. As a class, it can be inherited by other classes. This means that its properties may be changes, and additional functionalities may be added to it without the need to directly change the code. The aim of this module is to facilitate the creationg of video, and simplify the otherwise tedious process imposed by native MATLAB&reg; functions.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">General information</a></li><li><a href="#2">Licence</a></li><li><a href="#5">Independent public properties</a></li><li><a href="#6">Define a "Save as" path</a></li><li><a href="#7">Video from existing images (timelapse)</a></li><li><a href="#8">Dependent public properties.</a></li><li><a href="#9">Protected properties</a></li><li><a href="#10">Private properties</a></li><li><a href="#11">Constants</a></li><li><a href="#12">Property <tt>set</tt> and <tt>get</tt> methods</a></li><li><a href="#14">Validation of <tt>savingPath</tt></a></li><li><a href="#16">Verification of parameters.</a></li><li><a href="#18">Validation of <tt>framerate</tt></a></li><li><a href="#22">Public Methods</a></li><li><a href="#38">Protected Methods</a></li><li><a href="#54">Private and Sealed Methods</a></li><li><a href="#60">Verify the 'save as' path</a></li><li><a href="#63">VIM (a unix editor) specific settings.</a></li></ul></div><h2>General information<a name="1"></a></h2><pre>     Author.............Pouria Hadjibagheri
+     Last modified......25 December 2015
+     Matlab version.....MATLAB R2015b
+     Licence............GPLv2.0
+     Copyright..........2015(C) Pouria Hadjibagheri.</pre><h2>Licence<a name="2"></a></h2><p>MakeVideo. A comprehensive module for creating videos in MATLAB&reg;. Copyright (C) 2015  Pouria Hadjibagheri.</p><p>This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.</p><p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p><p>You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA; or visit <a href="https://opensource.org/licenses/gpl-2.0.php">https://opensource.org/licenses/gpl-2.0.php</a></p><pre class="codeinput"><span class="keyword">classdef</span> MakeVideo
+</pre><pre class="codeinput"><span class="comment">%MAKEVIDEO Summary of this class goes here</span>
+<span class="comment">%   Detailed explanation goes here</span>
+</pre><h2>Independent public properties<a name="5"></a></h2><p>These are the properties that can be changed by the user of this class in MATLAB&reg;.</p><h2>Define a "Save as" path<a name="6"></a></h2><p>The path (including the file name and type) to the location where the motion picture is to be saved. This property must be passed as <tt>char</tt></p><p>Example:</p><pre class="language-matlab">MakeVideo = <span class="string">'/user/nini/MyVideos/MyTimelapse.avi'</span>
+</pre><p>If not passed, the UI save window will be automatically instantiated, asking the user to define a path.</p><p>Neither use nor instantiate this property unless you are intending to "hardcode" the location.</p><h2>Video from existing images (timelapse)<a name="7"></a></h2><p>Neither use nor instantiate these properties unless you are intending to create a timelapse video from existing images.</p><p>File name of the images in as <tt>struct</tt>.</p><p>Example:</p><pre class="language-matlab">MakeVideo.image_names = { [<span class="string">'image01.jpg'</span>], [<span class="string">'image02.jpg'</span>] }; <span class="comment">% and etc.</span>
+</pre><p>Directory in which the images are stored are passed separately as <tt>char</tt>.</p><p>Example:</p><pre class="language-matlab">MakeVideo.image_path = <span class="string">'/user/nini/MyPictures/'</span>;
+</pre><h2>Dependent public properties.<a name="8"></a></h2><p><tt>framerate</tt> in frames per second, i.e. the number of slides shown in each second of the video. The default is 24 frames per second.</p><p><tt>quality</tt> in pixels, and refers to the height. The width is then automatically calculated based on HD standard aspect ratio, which is 16x9. All renderings are progressive, as opposed to interlaced. Default <tt>quality</tt> is 720, which is the normal HD quality. For your reference; Best HD is 1080, and ultra HD (4k) is 4000. Needless to say that (1) if you are doing a timelapse, your images should correspond to the quality you are requesting, or the definition won't be achieved, and (2) the higher the resolution, the longer it will take to render the video. In other words, if you are using an old PC that still runs on Windows XP, you probably don't want to go 4K.</p><p>All defaults are set on the basis of international standard for HD motion pictures.</p><pre class="codeinput">    properties (Access = public)
+
+        image_names;            <span class="comment">% Struct of existing file names.</span>
+        image_path;             <span class="comment">% String of location directory.</span>
+        savingPath = [];        <span class="comment">% Where to save the video.</span>
+        framerate = 24;         <span class="comment">% 24 fps; HD standard.</span>
+        quality = uint16(720);  <span class="comment">% HD 720p.</span>
+
+    <span class="keyword">end</span>  <span class="comment">% Public properties.</span>
+</pre><h2>Protected properties<a name="9"></a></h2><p>These are the properties that can be changed if and only if this class is inherited as a superclass into another class in MATLAB&reg;. This implementation is enforced to ensure that only experienced users can make alterations, as inappropriate  modifications might amount to errors, or incorrect and often bizzare outputs.</p><p>Do not change the default values unless (1) you have read the documentations, and (2) you know what yu are doing.</p><p><b>Video attributes</b></p><p>These properties handle the attributes of the video, and include:</p><p><tt>vid_profile</tt> is the encoding profile standard based on which the video file is written, so that it can be readable by specific systems /devices.</p><p>AVI encoding profiles (as described in MATLAB&reg; documentations:</p><p>
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;
+border-color:#999;margin:0px auto;}
+.tg td{font-family:Arial, sans-serif;font-size:11px;padding:10px 5px;
+border-style:solid;border-width:1px;overflow:hidden;word-break:normal;
+border-color:#999;color:#444;background-color:#F7FDFA;}
+.tg th{font-family:Arial, sans-serif;font-size:11px;font-weight:normal;
+padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;
+word-break:normal;border-color:#999;color:#fff;background-color:#26ADE4;}
+.tg .tg-yw4l{vertical-align:top}
+</style>
+<table class="tg">
+  <tr><th class="tg-yw4l">Profile</th><th class="tg-yw4l">Description</th>
+  </tr><tr><td class="tg-yw4l">Archival</td><td class="tg-yw4l">Motion
+  JPEG 2000 file with lossless compression.</td></tr>
+  <tr><td class="tg-yw4l">Motion JPEG AVI</td><td class="tg-yw4l">AVI
+  file using Motion JPEG encoding.</td></tr>
+  <tr><td class="tg-yw4l">Motion JPEG 2000</td><td class="tg-yw4l">Motion
+  JPEG 2000 file.</td></tr> <tr><td class="tg-yw4l">MPEG4</td><td
+  class="tg-yw4l">MPEG-4 file with H.264 encoding (systems with Windows 7
+  or later, or Mac OS X 10.7 and later) - .mp4 or .m4v </td></tr>
+  <tr><td class="tg-yw4l">Uncompressed AVI</td><td class="tg-yw4l">
+  Uncompressed AVI file with RGB24 video.</td></tr><tr><td class="tg-yw4l"
+  >Indexed AVI</td><td class="tg-yw4l">Uncompressed AVI file with indexed
+  video.</td></tr><tr><td class="tg-yw4l">Grayscale AVI</td><td
+  class="tg-yw4l">Uncompressed AVI file with grayscale video.</td></tr>
+</table>
+</p><p>All defaults are set on the basis of international standard for HD motion pictures.</p><pre class="codeinput">    properties (Access = protected)
+
+        aspect_ratio = [16 9];  <span class="comment">% Standard HD video aspect.</span>
+
+        <span class="comment">% AVI encoding profiles (as described in MATLAB(R) documentations:</span>
+        <span class="comment">% For more info on encoding types, see the documentations.</span>
+        vid_profile = <span class="string">'Uncompressed AVI'</span>;  <span class="comment">% Standard for RGB24 video.</span>
+
+    <span class="keyword">end</span>  <span class="comment">% Protected properties</span>
+</pre><h2>Private properties<a name="10"></a></h2><pre class="codeinput">    properties (Access = private)
+
+        PICTURE_QUALITY = uint8(100);  <span class="comment">% Percentage of images quality.</span>
+
+    <span class="keyword">end</span>  <span class="comment">% Private properties.</span>
+</pre><h2>Constants<a name="11"></a></h2><p>Be warned that changing the scale factor would slow the programme down considerable. It's best to define the appropriate size when creating the slides / images in the first place.</p><pre class="codeinput">    properties (Constant)
+
+        RESIZE_ALGORITHM = <span class="string">'bilinear'</span>; <span class="comment">% Bilinear interpolation.</span>
+        SCALE_FACTOR = single(1);      <span class="comment">% Default scaling factor (0:1 ratio).</span>
+        DISPLAY_INTERVALS = uint8(10); <span class="comment">% Display rendered image intervals.</span>
+
+    <span class="keyword">end</span>
+</pre><h2>Property <tt>set</tt> and <tt>get</tt> methods<a name="12"></a></h2><pre class="codeinput">    methods
+</pre><h2>Validation of <tt>savingPath</tt><a name="14"></a></h2><pre class="codeinput">        <span class="keyword">function</span> obj = set.savingPath(obj, value)
+</pre><pre class="codeinput">            <span class="comment">% A |value| is given?</span>
+            <span class="keyword">if</span> ~isempty(value)
+
+                <span class="comment">% Is the path viable? Let's test.</span>
+                status = testPath(obj, value);
+
+            <span class="comment">% No |value| is given.</span>
+            <span class="keyword">else</span>
+
+                status = false;
+
+            <span class="keyword">end</span>
+</pre><h2>Verification of parameters.<a name="16"></a></h2><p>Checking the existence and validity of parameters.</p><pre class="codeinput">            <span class="comment">% Is the path to save the file given? if not, ask the user for it.</span>
+            <span class="keyword">if</span> ~status
+
+                <span class="comment">% Ask the user for a file name.</span>
+                [avi_name, avi_path] = uiputfile(<span class="string">'*.avi'</span>, <span class="keyword">...</span>
+                                                 <span class="string">'Save video file as'</span>);
+                <span class="comment">% Cancelled?</span>
+                <span class="keyword">if</span> ~avi_name
+
+                    <span class="comment">% Killed --&gt; What it says!</span>
+                    error(sprintf([<span class="string">'\n&gt;&gt;&gt; Operation terminated '</span><span class="keyword">...</span>
+                                   <span class="string">'by the user.\n'</span>]));  <span class="comment">%#ok&lt;SPERR&gt;</span>
+
+                <span class="keyword">end</span>  <span class="comment">% if</span>
+
+                <span class="comment">% If no error is thrown and we have got so far:</span>
+
+                <span class="comment">% Create a single string of the absolute path for saving the</span>
+                <span class="comment">% final output file.</span>
+                value = strcat(avi_path, avi_name);
+
+                <span class="comment">% Is the path viable? Let's test.</span>
+                <span class="comment">% If not, an error is returned in the relevant function.</span>
+                testPath(obj, value);
+
+                <span class="comment">% Property value is set.</span>
+                obj.savingPath = value;
+                fprintf(<span class="string">'\n     Saving path successfully set.\n'</span>);
+
+                <span class="keyword">return</span>; <span class="comment">% Nothing else to do here.</span>
+
+
+            <span class="comment">% The path is valid.</span>
+            <span class="keyword">else</span>
+
+                <span class="comment">% Property value is set.</span>
+                obj.savingPath = value;
+                fprintf(<span class="string">'\n     Saving path successfully set.\n'</span>);
+
+                <span class="keyword">return</span>; <span class="comment">% Nothing else to do here.</span>
+
+            <span class="keyword">end</span>
+</pre><pre class="codeinput">        <span class="keyword">end</span>  <span class="comment">% function (savingPath)</span>
+</pre><h2>Validation of <tt>framerate</tt><a name="18"></a></h2><p><b>Note</b>: <tt>str2double</tt> is considerably faster than <tt>str2num</tt>. The former throws an error if the variable passed is a mix of numbers and characters. The latter on the other hand, checks (through iteration) for the existence of non-numeric characters, and if any exists, it returns an empty array.</p><pre class="codeinput">        <span class="keyword">function</span> obj = set.framerate(obj, value)
+
+            <span class="keyword">try</span>
+
+                <span class="comment">% Check if the |framerate| given is a |char|.</span>
+                <span class="keyword">if</span> isa(value, <span class="string">'char'</span>)
+                    <span class="comment">% |framerate| is given as a |char|. It is converted into</span>
+                    <span class="comment">% |double|. For more see section intro.</span>
+                    tmp = str2double(value);
+
+                    <span class="comment">% If |framerate| is not greater than zero.</span>
+                    <span class="keyword">if</span> tmp &lt; 1
+
+                        <span class="comment">% Nothing else to do here until the user learns how to</span>
+                        <span class="comment">% use the programme.</span>
+                        error(sprintf([<span class="string">'Value Error:\n   '</span>
+                                       <span class="string">'Expected an integer greater than '</span><span class="keyword">...</span>
+                                       <span class="string">'zero for &lt;framerate&gt;, got %d '</span><span class="keyword">...</span>
+                                       <span class="string">'instead.'</span>], tmp)); <span class="comment">%#ok&lt;SPERR&gt;</span>
+
+                    <span class="keyword">else</span>
+
+                        obj.framerate = tmp;
+
+                    <span class="keyword">end</span> <span class="comment">% if (tmp)</span>
+
+
+                <span class="comment">% |framerate| is not |char|, and is greater than zero.</span>
+                <span class="keyword">elseif</span> and(isnumeric(value), value &gt; 0)
+
+                    obj.framerate = value;
+
+                    <span class="keyword">return</span>;  <span class="comment">% Function terminated.</span>
+
+                <span class="comment">% |framerate| is not |char|, but is not greater than zero.</span>
+                <span class="keyword">else</span>
+
+                    <span class="comment">% Nothing else to do here until the user learns how to</span>
+                    <span class="comment">% use the programme.</span>
+                    error(sprintf([<span class="string">'Value Error:\n   '</span>
+                                   <span class="string">'Expected an integer greater than '</span><span class="keyword">...</span>
+                                   <span class="string">'zero for &lt;framerate&gt;, got %d instead.'</span>]<span class="keyword">...</span>
+                                  , value)); <span class="comment">%#ok&lt;SPERR&gt;</span>
+
+
+                <span class="keyword">end</span>  <span class="comment">% if (framrate)</span>
+
+            <span class="keyword">catch</span> exception
+                <span class="comment">% Most likely induced by passing a mixture of strings and</span>
+                <span class="comment">% numbers to |str2double| - but you never know! So the actual</span>
+                <span class="comment">% message generated by MATLAB(R) is displayed.</span>
+                error(sprintf([<span class="string">'Input Error:\n'</span> <span class="keyword">...</span>
+                               <span class="string">'   %s \n'</span> <span class="keyword">...</span>
+                               <span class="string">'   The process is terminated prematurely.'</span>], <span class="keyword">...</span>
+                              exception.message), <span class="keyword">...</span>
+                              exception.identifier);
+
+
+            <span class="keyword">end</span>  <span class="comment">% try</span>
+
+        <span class="keyword">end</span>  <span class="comment">% function (framerate)</span>
+</pre><pre class="codeinput">        <span class="keyword">function</span> obj = set.image_path(obj, value)
+            obj.image_path = value;
+        <span class="keyword">end</span>
+</pre><pre class="codeinput">        <span class="keyword">function</span> obj = set.image_names(obj, value)
+            obj.image_names = value;
+        <span class="keyword">end</span>
+</pre><pre class="codeinput">    <span class="keyword">end</span>
+</pre><h2>Public Methods<a name="22"></a></h2><pre class="codeinput">    methods (Access=public)
+</pre><pre class="codeinput">        <span class="keyword">function</span> liveStream(obj, img)
+        <span class="comment">%LIVESTREAM</span>
+
+        	createLive(obj, img);
+
+        <span class="keyword">end</span>
+</pre><pre class="codeinput">        <span class="keyword">function</span> liveStop(obj)
+        <span class="comment">%LIVESTOP</span>
+            createLive(obj, [])
+
+        <span class="keyword">end</span>
+</pre><pre class="codeinput">        <span class="keyword">function</span> compose(obj)
+</pre><pre class="codeinput">        <span class="comment">%COMPOSE</span>
+</pre><pre class="codeinput">            <span class="comment">%True if one is true. False if both are true, or both are false.</span>
+            lapse_test_1 = xor(~isempty(obj.image_names), <span class="keyword">...</span>
+                               isempty(obj.image_path));
+
+            lapse_test_2 = xor(isempty(obj.image_names), <span class="keyword">...</span>
+                               ~isempty(obj.image_path));
+</pre><p>Is this a timelapse from existing image files?</p><pre class="codeinput">            <span class="keyword">if</span> or(~isempty(obj.image_names), ~isempty(obj.image_path))
+</pre><pre class="codeinput">                timeLapse(obj);
+</pre><p>Both <tt>image_names</tt> or <tt>image_path</tt> are empty, but the function <tt>compose</tt> is implemented directly. Here we will give the user a chance to select images using GUI.</p><pre class="codeinput">            <span class="keyword">elseif</span> and(lapse_test_1, lapse_test_2)
+</pre><pre class="codeinput">                <span class="comment">% Types of images allowed.</span>
+                allowed_image_formats = {<span class="keyword">...</span>
+                              <span class="string">'*.jpeg;*.jpg;*.bmp;*.tif;*.tiff;*.png;*.gif'</span>, <span class="keyword">...</span>
+                              <span class="string">'Image Files (JPEG, BMP, TIFF, PNG and GIF)'</span>};
+
+                <span class="comment">% Header of the GUI opener.</span>
+                gui_header = <span class="string">'Select Images'</span>;
+
+                <span class="keyword">try</span>
+
+                    <span class="comment">% GUI opener.</span>
+                    [file_names, file_path] = uigetfile(<span class="keyword">...</span>
+                                               allowed_image_formats, <span class="keyword">...</span>
+                                               gui_header, <span class="string">'multiselect'</span>, <span class="string">'on'</span>);
+
+                    obj.image_names = file_names;
+                    obj.image_path = file_path;
+
+                    total_files = length(file_names);
+                    <span class="comment">% Telling the user what they've done!</span>
+                    fprintf(sprintf([<span class="string">'\nTotal of &lt;%d&gt; files were '</span>, <span class="keyword">...</span>
+                                     <span class="string">'selected from: &lt;%s&gt;.\n'</span>], <span class="keyword">...</span>
+                                    total_files, file_path));
+
+                    timeLapse(obj);
+
+                    <span class="keyword">return</span>;
+
+                <span class="keyword">catch</span> exception
+
+                    <span class="comment">% A Runtime error that I couldn't think of to handle (i.e.</span>
+                    <span class="comment">% beyond imagination error!) has occurred.</span>
+                    error(sprintf([<span class="string">'Runtime Error:\n'</span> <span class="keyword">...</span>
+                               <span class="string">'   %s \n'</span> <span class="keyword">...</span>
+                               <span class="string">'   The process is terminated prematurely.'</span>],<span class="keyword">...</span>
+                               exception.message), exception.identifier);
+
+                <span class="keyword">end</span>  <span class="comment">% try (GUI opener)</span>
+</pre><p>If either <tt>image_names</tt> or <tt>image_path</tt> is empty.</p><pre class="codeinput">            <span class="keyword">elseif</span> or(lapse_test_1, lapse_test_2)
+
+                <span class="comment">% Show an error dialogue and explain why!</span>
+                error(sprintf( <span class="keyword">...</span>
+                    [<span class="string">'Value Error:\n'</span> <span class="keyword">...</span>
+                     <span class="string">'   Timelapse values "image_names" or "image_path" '</span><span class="keyword">...</span>
+                     <span class="string">'are set but do not meet the criteria. \n'</span> <span class="keyword">...</span>
+                     <span class="string">'Please read the documentations for additional '</span> <span class="keyword">...</span>
+                     <span class="string">'information.\n\n'</span> <span class="keyword">...</span>
+                     <span class="string">'   The process is terminated prematurely.'</span>])); <span class="comment">%#ok&lt;SPERR&gt;</span>
+
+            <span class="keyword">end</span>  <span class="comment">% if (timeLapse)</span>
+</pre><pre class="codeinput">        <span class="keyword">end</span>  <span class="comment">% function (create)</span>
+</pre><pre class="codeinput">    <span class="keyword">end</span>  <span class="comment">% methods (public)</span>
+</pre><h2>Protected Methods<a name="38"></a></h2><pre class="codeinput">    methods (Access=protected)
+</pre><pre class="codeinput">        <span class="keyword">function</span> createLive(obj, live_image)
+</pre><pre class="codeinput">        <span class="comment">%CREATELIVE</span>
+</pre><p>For creating a video whilst generating images, the <tt>video_object</tt> must be defined as a <b>singleton</b> object. This means that one and only one instance of this object can be created, unless it is explicitly deleted. In MATLAB&reg;, this is achieved implicitly by defining a <tt>persistent</tt> variable.</p><pre class="codeinput">            <span class="keyword">persistent</span> video_object
+</pre><p>If there is no <tt>video_object</tt>, then it is the first time that this function is called.</p><p>If, however, there is is a <tt>video_object</tt>, but there is no <tt>live_image</tt>, this it is the last time that this function is called, so the termination process is initiated, and the existing |video_object|is removed.</p><pre class="codeinput">            <span class="comment">% There is no |video_object|.</span>
+            <span class="keyword">if</span> isempty(video_object)
+</pre><pre class="codeinput">                <span class="keyword">if</span> isempty(obj.savingPath)
+                    obj.savingPath = [];
+                <span class="keyword">end</span>
+
+                video_object = videoObject(obj);
+
+                fprintf(<span class="string">'\nCompiling frames to video...\n'</span>);
+</pre><p>There is a <tt>video_object</tt>, but no <tt>live_image</tt>.</p><pre class="codeinput">            <span class="keyword">elseif</span> and(~isempty(video_object), isempty(live_image))
+
+                <span class="comment">% Done with the video object: file closed.</span>
+                close(video_object);
+
+                <span class="comment">% Singleton object removed.</span>
+                delete(video_object);
+
+                fprintf(<span class="string">'\n.......... compilation finished.\n'</span>);
+
+                <span class="comment">% If we've got so far with no error, then all's gone well!</span>
+                <span class="comment">% The user is hereby informed through a message box!</span>
+                fprintf([<span class="string">'\n&gt;&gt; Operation Completed. \n\n'</span><span class="keyword">...</span>
+                         <span class="string">'Video was successfully created and saved into the'</span><span class="keyword">...</span>
+                         <span class="string">' designated path.\n'</span>]);
+
+
+                <span class="comment">% No need for the rest of the function to run.</span>
+                <span class="keyword">return</span>;  <span class="comment">% Process is terminated.</span>
+
+            <span class="keyword">end</span>  <span class="comment">% if</span>
+</pre><p>If there is a scale factor (someone was adventurous and changed my constant!)</p><pre class="codeinput">            <span class="keyword">if</span> obj.SCALE_FACTOR ~= 1
+
+                <span class="comment">% Scale as specified.</span>
+                current_image = imresize(live_image, <span class="keyword">...</span>
+                                         obj.SCALE_FACTOR, <span class="keyword">...</span>
+                                         obj.RESIZE_ALGORITHM);
+
+            <span class="keyword">else</span>
+
+                current_image = live_image;
+
+            <span class="keyword">end</span>  <span class="comment">% if</span>
+
+
+            <span class="keyword">try</span>
+
+                <span class="comment">% Create and open the file.</span>
+                open(video_object);
+
+                <span class="comment">% Writing the video object into the file.</span>
+                writeVideo(video_object, current_image);
+
+                <span class="keyword">return</span>;  <span class="comment">% Function terminated.</span>
+
+            <span class="keyword">catch</span> exception
+
+                <span class="comment">% A Runtime error that I couldn't think of to handle (i.e.</span>
+                <span class="comment">% beyond imagination error!) has occurred.</span>
+                error(sprintf(<span class="string">'Runtime Error:\n   %s'</span>, <span class="keyword">...</span>
+                              exception.message), exception.identifier);
+
+            <span class="keyword">end</span>  <span class="comment">% try</span>
+</pre><pre class="codeinput">        <span class="keyword">end</span>  <span class="comment">% function (createLive)</span>
+</pre><pre class="codeinput">        <span class="keyword">function</span> timeLapse(obj)
+</pre><pre class="codeinput">        <span class="comment">%TIMELAPSE</span>
+
+            file_count = length(obj.image_names);
+
+            video_object = videoObject(obj);
+</pre><pre class="codeinput">            <span class="keyword">try</span>
+
+                <span class="comment">% Create and open the file.</span>
+                open(video_object);
+
+                <span class="comment">% Initiate progress bar.</span>
+                progress_bar = waitbar(0, <span class="string">'Please wait...'</span>);
+
+                <span class="keyword">for</span> iter=1:file_count
+
+                    img_path = strcat(obj.image_path, <span class="keyword">...</span>
+                                      obj.image_names{iter});
+
+                    <span class="comment">% Read the image from the file.</span>
+                    current_image = imread(obj.savingPath, img_path);
+
+
+                    <span class="comment">% If there is a scale factor</span>
+                    <span class="comment">% (someone was adventurous and changed my constant!)</span>
+                    <span class="keyword">if</span> obj.SCALE_FACTOR ~= 1
+
+                        <span class="comment">% Scale as specified.</span>
+                        current_image = imresize(current_image, <span class="keyword">...</span>
+                                                 obj.SCALE_FACTOR, <span class="keyword">...</span>
+                                                 obj.RESIZE_ALGORITHM);
+
+                    <span class="keyword">end</span>
+
+                    <span class="comment">% Writing the video object into the file.</span>
+                    writeVideo(video_object, current_image);
+
+                    <span class="comment">% Preview image (once every 10 frames.)</span>
+                    <span class="keyword">if</span> mod(iter, <span class="keyword">...</span>
+                           round(file_count/obj.DISPLAY_INTERVALS)) == 1
+
+                        imshow(current_image) <span class="comment">% Display where we are.</span>
+
+                        <span class="comment">% Set title.</span>
+                        title(sprintf(<span class="string">'Preview image %d/%d'</span>, <span class="keyword">...</span>
+                                      iter, <span class="keyword">...</span>
+                                      file_count))
+
+                        <span class="comment">% Bring the progress bar window to front. It might</span>
+                        <span class="comment">% go to the back when the image is displayed.</span>
+                        uistack(progress_bar, <span class="string">'top'</span>)
+
+                    <span class="keyword">end</span> <span class="comment">% if (preview)</span>
+
+                    <span class="comment">% Update progress bar... We're making progress ;)</span>
+                    waitbar(iter/file_count, progress_bar);
+
+                <span class="keyword">end</span>  <span class="comment">% for (image iterator)</span>
+
+                <span class="comment">% Done with the progress bar. This does what it says!</span>
+                delete(progress_bar);
+
+                <span class="comment">% Ditto ;) Done with the video object: file closed.</span>
+                close(video_object);
+
+                <span class="comment">% If we've got so far with no error, then all's gone well!</span>
+                <span class="comment">% The user is hereby informed through a message box!</span>
+                msgbox(sprintf(<span class="keyword">...</span>
+                        [<span class="string">'Operation Completed. \n\n'</span><span class="keyword">...</span>
+                         <span class="string">'Video was successfully created and saved into the'</span><span class="keyword">...</span>
+                         <span class="string">' designated path.\n'</span>]));
+
+                <span class="keyword">return</span>;  <span class="comment">% Function terminated.</span>
+
+            <span class="keyword">catch</span> exception
+
+                <span class="comment">% A Runtime error that I couldn't think of to handle (i.e.</span>
+                <span class="comment">% beyond imagination error!) has occurred.</span>
+                error(sprintf(<span class="string">'Runtime Error:\n   %s'</span>, <span class="keyword">...</span>
+                              exception.message), exception.identifier);
+
+            <span class="keyword">end</span>  <span class="comment">% try</span>
+</pre><pre class="codeinput">        <span class="keyword">end</span>  <span class="comment">% function(timeLapse)</span>
+</pre><pre class="codeinput">    <span class="keyword">end</span>  <span class="comment">% methods (protected)</span>
+</pre><h2>Private and Sealed Methods<a name="54"></a></h2><pre class="codeinput">    methods (Sealed=true, Access=private)
+</pre><pre class="codeinput">        <span class="keyword">function</span> video_object = videoObject(obj)
+</pre><pre class="codeinput">        <span class="comment">%INSTANTIATEVIDEO</span>
+</pre><p>Instantiating a video object and setting the properties.</p><pre class="codeinput">            <span class="keyword">try</span>
+                fprintf(<span class="string">'\nInitiating the video object...'</span>);
+
+                <span class="comment">% VideoWrite instantiated.</span>
+                video_object = VideoWriter(obj.savingPath, obj.vid_profile);
+
+                <span class="comment">% Framerate set.</span>
+                video_object.FrameRate = obj.framerate;
+
+                <span class="comment">% Quality set.</span>
+<span class="comment">%                 video_object.Quality = obj.PICTURE_QUALITY;</span>
+
+                fprintf(<span class="string">'.......... Initiated.\n'</span>);
+                <span class="keyword">return</span>;  <span class="comment">% All done.</span>
+
+            <span class="keyword">catch</span> exception
+
+                <span class="comment">% A Runtime error that I couldn't think of to handle (i.e. beyond</span>
+                <span class="comment">% imagination error!) has occurred.</span>
+                error(sprintf(<span class="string">'Runtime Error:\n   %s'</span>, <span class="keyword">...</span>
+                              exception.message), exception.identifier);
+
+            <span class="keyword">end</span>  <span class="comment">% try</span>
+</pre><pre class="codeinput">        <span class="keyword">end</span>  <span class="comment">% function (instantiateVideo)</span>
+</pre><h2>Verify the 'save as' path<a name="60"></a></h2><pre class="codeinput">        <span class="keyword">function</span> viability = testPath(~, path)
+        <span class="comment">%TESTPATH</span>
+
+
+            <span class="comment">% Testing the viability of the path.</span>
+            <span class="comment">%</span>
+            <span class="comment">% For instance, does the user have sufficient permission to write</span>
+            <span class="comment">% in this directory? or is the disk healthy?</span>
+            <span class="keyword">try</span>
+                fprintf(<span class="string">'\nTesting the path...'</span>);
+
+                <span class="comment">% Create and open a file in the given path.</span>
+                test_file = fopen(path, <span class="string">'w'</span>);
+
+                <span class="comment">% Write into the file.</span>
+                fprintf(test_file,<span class="string">'testing the file.'</span>);
+
+                <span class="comment">% Close the file object.</span>
+                fclose(test_file);
+
+                <span class="comment">% Does what it says! Deletes the test file.</span>
+                delete(path)
+
+                <span class="comment">% I/O test passed.</span>
+                viability = true;
+
+                fprintf(<span class="string">'.......... Passed.\n'</span>);
+                <span class="keyword">return</span>;
+
+            <span class="keyword">catch</span> exception
+
+                <span class="comment">% There has been a problem with writing files in the given</span>
+                <span class="comment">% path; most likely something to do with ownership or</span>
+                <span class="comment">% permissions - but you never know! So the actual message</span>
+                <span class="comment">% generated by MATLAB(R) is displayed.</span>
+                error(sprintf([<span class="string">'I/O Error:\n'</span> <span class="keyword">...</span>
+                               <span class="string">'   %s \n'</span> <span class="keyword">...</span>
+                               <span class="string">'   The process is terminated prematurely.'</span>],<span class="keyword">...</span>
+                              exception.message), exception.identifier);
+
+            <span class="keyword">end</span>  <span class="comment">% try (saving path test)</span>
+
+        <span class="keyword">end</span>  <span class="comment">% function (testPath)</span>
+</pre><pre class="codeinput">    <span class="keyword">end</span>  <span class="comment">% methods (sealed and private)</span>
+</pre><pre class="codeinput"><span class="keyword">end</span>  <span class="comment">% class</span>
+</pre><pre class="codeoutput">
+ans = 
+
+  MakeVideo with properties:
+
+          image_names: []
+           image_path: []
+           savingPath: []
+            framerate: 24
+              quality: 720
+     RESIZE_ALGORITHM: 'bilinear'
+         SCALE_FACTOR: 1
+    DISPLAY_INTERVALS: 10
+
+</pre><h2>VIM (a unix editor) specific settings.<a name="63"></a></h2><p><b>Do not modify.</b></p><p>Indentation level = 4 spaces. Tab = 4 spaces (Tabs disabled). Width standard: 80 column.</p><pre class="codeinput"><span class="comment">% vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Make Videos
+% This is a comprehensive module for creating videos from slides. As a
+% class, it can be inherited by other classes. This means that its
+% properties may be changes, and additional functionalities may be added to
+% it without the need to directly change the code. The aim of this module
+% is to facilitate the creationg of video, and simplify the otherwise 
+% tedious process imposed by native MATLAB(R) functions.
+
+%% General information
+%
+%       Author.............Pouria Hadjibagheri
+%       Last modified......25 December 2015
+%       Matlab version.....MATLAB R2015b
+%       Licence............GPLv2.0
+%       Copyright..........2015(C) Pouria Hadjibagheri.
+
+%% Licence
+% MakeVideo. A comprehensive module for creating videos in MATLAB(R). Copyright 
+% (C) 2015  Pouria Hadjibagheri.
+% 
+% This program is free software; you can redistribute it and/or modify it under 
+% the terms of the GNU General Public License as published by the Free Software 
+% Foundation; either version 2 of the License, or (at your option) any later 
+% version.
+% 
+% This program is distributed in the hope that it will be useful, but WITHOUT 
+% ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+% FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License along with 
+% this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
+% Street, Fifth Floor, Boston, MA 02110-1301, USA; or visit 
+% <https://opensource.org/licenses/gpl-2.0.php>
+% 
+
+%%
+%
+classdef MakeVideo
+%MAKEVIDEO Summary of this class goes here
+%   Detailed explanation goes here
+
+    
+    %% Independent public properties
+    % These are the properties that can be changed by the user of this class
+    % in MATLAB(R). 
+    %
+    %% Define a "Save as" path
+    % The path (including the file name and type) to the location where the 
+    % motion picture is to be saved. This property must be passed as |char| 
+    %
+    % Example:
+    %
+    %   MakeVideo = '/user/nini/MyVideos/MyTimelapse.avi'
+    %
+    % If not passed, the UI save window will be automatically instantiated,
+    % asking the user to define a path. 
+    %
+    % Neither use nor instantiate this property unless you are intending
+    % to "hardcode" the location. 
+    %
+    %% Video from existing images (timelapse)
+    %
+    % Neither use nor instantiate these properties unless you are intending
+    % to create a timelapse video from existing images. 
+    %
+    % File name of the images in as |struct|.
+    %
+    % Example: 
+    %
+    %   MakeVideo.image_names = { ['image01.jpg'], ['image02.jpg'] }; % and etc.
+    %
+    % Directory in which the images are stored are passed separately as |char|.
+    %
+    % Example: 
+    %
+    %   MakeVideo.image_path = '/user/nini/MyPictures/';
+    %
+    %% Dependent public properties.
+    % |framerate| in frames per second, i.e. the number of slides shown
+    % in each second of the video. The default is 24 frames per second.
+    %
+    % |quality| in pixels, and refers to the height. The width is then
+    % automatically calculated based on HD standard aspect ratio, which is
+    % 16x9. All renderings are progressive, as opposed to interlaced.
+    % Default |quality| is 720, which is the normal HD quality. For your
+    % reference; Best HD is 1080, and ultra HD (4k) is 4000. Needless to
+    % say that (1) if you are doing a timelapse, your images should
+    % correspond to the quality you are requesting, or the definition
+    % won't be achieved, and (2) the higher the resolution, the longer it
+    % will take to render the video. In other words, if you are using
+    % an old PC that still runs on Windows XP, you probably don't want to
+    % go 4K. 
+    %
+    % 
+    % All defaults are set on the basis of international standard for HD 
+    % motion pictures.
+    properties (Access = public)
+       
+        image_names;            % Struct of existing file names.
+        image_path;             % String of location directory. 
+        savingPath = [];        % Where to save the video.
+        framerate = 24;         % 24 fps; HD standard.
+        quality = uint16(720);  % HD 720p.
+        
+    end  % Public properties.
+    
+
+    %% Protected properties
+    % These are the properties that can be changed if and only if this class
+    % is inherited as a superclass into another class in MATLAB(R). This
+    % implementation is enforced to ensure that only experienced users can make
+    % alterations, as inappropriate  modifications might amount to errors, or 
+    % incorrect and often bizzare outputs. 
+    %
+    % Do not change the default values unless (1) you have read the 
+    % documentations, and (2) you know what yu are doing.
+    %
+    % *Video attributes*
+    %
+    % These properties handle the attributes of the video, and include:
+    %
+    % |vid_profile| is the encoding profile standard based on which the 
+    % video file is written, so that it can be readable by specific systems
+    % /devices.
+    %
+    % AVI encoding profiles (as described in MATLAB(R) documentations:
+    % 
+    % <html>
+    % <style type="text/css">
+    % .tg  {border-collapse:collapse;border-spacing:0;
+    % border-color:#999;margin:0px auto;}
+    % .tg td{font-family:Arial, sans-serif;font-size:11px;padding:10px 5px;
+    % border-style:solid;border-width:1px;overflow:hidden;word-break:normal;
+    % border-color:#999;color:#444;background-color:#F7FDFA;}
+    % .tg th{font-family:Arial, sans-serif;font-size:11px;font-weight:normal;
+    % padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;
+    % word-break:normal;border-color:#999;color:#fff;background-color:#26ADE4;}
+    % .tg .tg-yw4l{vertical-align:top}
+    % </style>
+    % <table class="tg">
+    %   <tr><th class="tg-yw4l">Profile</th><th class="tg-yw4l">Description</th>
+    %   </tr><tr><td class="tg-yw4l">Archival</td><td class="tg-yw4l">Motion 
+    %   JPEG 2000 file with lossless compression.</td></tr>
+    %   <tr><td class="tg-yw4l">Motion JPEG AVI</td><td class="tg-yw4l">AVI 
+    %   file using Motion JPEG encoding.</td></tr>
+    %   <tr><td class="tg-yw4l">Motion JPEG 2000</td><td class="tg-yw4l">Motion 
+    %   JPEG 2000 file.</td></tr> <tr><td class="tg-yw4l">MPEG4</td><td 
+    %   class="tg-yw4l">MPEG-4 file with H.264 encoding (systems with Windows 7 
+    %   or later, or Mac OS X 10.7 and later) - .mp4 or .m4v </td></tr>
+    %   <tr><td class="tg-yw4l">Uncompressed AVI</td><td class="tg-yw4l">
+    %   Uncompressed AVI file with RGB24 video.</td></tr><tr><td class="tg-yw4l"
+    %   >Indexed AVI</td><td class="tg-yw4l">Uncompressed AVI file with indexed 
+    %   video.</td></tr><tr><td class="tg-yw4l">Grayscale AVI</td><td 
+    %   class="tg-yw4l">Uncompressed AVI file with grayscale video.</td></tr>
+    % </table>
+    % </html>
+    % 
+    % All defaults are set on the basis of international standard for HD 
+    % motion pictures.
+    properties (Access = protected)
+
+        aspect_ratio = [16 9];  % Standard HD video aspect.
+
+        % AVI encoding profiles (as described in MATLAB(R) documentations:  
+        % For more info on encoding types, see the documentations. 
+        vid_profile = 'Uncompressed AVI';  % Standard for RGB24 video.
+        
+    end  % Protected properties
+    
+
+    %% Private properties
+    %
+    properties (Access = private)        
+        
+        PICTURE_QUALITY = uint8(100);  % Percentage of images quality.
+        
+    end  % Private properties.
+    
+    
+    %% Constants
+    % Be warned that changing the scale factor would slow the programme
+    % down considerable. It's best to define the appropriate size when
+    % creating the slides / images in the first place. 
+    properties (Constant)
+        
+        RESIZE_ALGORITHM = 'bilinear'; % Bilinear interpolation.
+        SCALE_FACTOR = single(1);      % Default scaling factor (0:1 ratio).
+        DISPLAY_INTERVALS = uint8(10); % Display rendered image intervals.
+        
+    end
+    
+
+    %% Property |set| and |get| methods
+    %
+    methods
+
+        %% Validation of |savingPath|
+        function obj = set.savingPath(obj, value)
+
+            % A |value| is given?
+            if ~isempty(value)
+
+                % Is the path viable? Let's test.
+                status = testPath(obj, value);
+
+            % No |value| is given.
+            else
+
+                status = false;
+
+            end
+
+            %% Verification of parameters.
+            % Checking the existence and validity of parameters.
+
+            % Is the path to save the file given? if not, ask the user for it.
+            if ~status
+
+                % Ask the user for a file name. 
+                [avi_name, avi_path] = uiputfile('*.avi', ...
+                                                 'Save video file as');
+                % Cancelled? 
+                if ~avi_name
+
+                    % Killed REPLACE_WITH_DASH_DASH> What it says! 
+                    error(sprintf(['\n>>> Operation terminated '...
+                                   'by the user.\n']));  %#ok<SPERR>
+
+                end  % if
+
+                % If no error is thrown and we have got so far:
+
+                % Create a single string of the absolute path for saving the
+                % final output file. 
+                value = strcat(avi_path, avi_name);
+
+                % Is the path viable? Let's test.
+                % If not, an error is returned in the relevant function. 
+                testPath(obj, value);
+                
+                % Property value is set.
+                obj.savingPath = value;
+                fprintf('\n     Saving path successfully set.\n');
+
+                return; % Nothing else to do here. 
+
+
+            % The path is valid. 
+            else
+
+                % Property value is set.
+                obj.savingPath = value;
+                fprintf('\n     Saving path successfully set.\n');
+
+                return; % Nothing else to do here. 
+
+            end
+
+        end  % function (savingPath)
+
+
+        %% Validation of |framerate|
+        % *Note*: |str2double| is considerably faster than |str2num|. The former
+        % throws an error if the variable passed is a mix of numbers and 
+        % characters. The latter on the other hand, checks (through iteration) 
+        % for the existence of non-numeric characters, and if any exists, it 
+        % returns an empty array.
+        function obj = set.framerate(obj, value)
+
+            try
+
+                % Check if the |framerate| given is a |char|.
+                if isa(value, 'char')
+                    % |framerate| is given as a |char|. It is converted into
+                    % |double|. For more see section intro.
+                    tmp = str2double(value);
+
+                    % If |framerate| is not greater than zero.
+                    if tmp < 1 
+
+                        % Nothing else to do here until the user learns how to 
+                        % use the programme.
+                        error(sprintf(['Value Error:\n   '
+                                       'Expected an integer greater than '...
+                                       'zero for <framerate>, got %d '...
+                                       'instead.'], tmp)); %#ok<SPERR>
+                                   
+                    else
+
+                        obj.framerate = tmp;
+
+                    end % if (tmp)
+                    
+                    
+                % |framerate| is not |char|, and is greater than zero.
+                elseif and(isnumeric(value), value > 0)
+
+                    obj.framerate = value;
+
+                    return;  % Function terminated. 
+
+                % |framerate| is not |char|, but is not greater than zero.
+                else
+
+                    % Nothing else to do here until the user learns how to 
+                    % use the programme.
+                    error(sprintf(['Value Error:\n   '
+                                   'Expected an integer greater than '...
+                                   'zero for <framerate>, got %d instead.']...
+                                  , value)); %#ok<SPERR>
+
+
+                end  % if (framrate)
+
+            catch exception  
+                % Most likely induced by passing a mixture of strings and 
+                % numbers to |str2double| - but you never know! So the actual 
+                % message generated by MATLAB(R) is displayed.
+                error(sprintf(['Input Error:\n' ...
+                               '   %s \n' ...
+                               '   The process is terminated prematurely.'], ...
+                              exception.message), ...
+                              exception.identifier);
+
+
+            end  % try
+
+        end  % function (framerate)
+        
+        
+        %%
+        %
+        function obj = set.image_path(obj, value)
+            obj.image_path = value;
+        end
+        
+        %%
+        %
+        function obj = set.image_names(obj, value)
+            obj.image_names = value;
+        end
+
+    end 
+
+
+
+    %% Public Methods
+    %
+    methods (Access=public)
+        
+        %%
+        function liveStream(obj, img)
+        %LIVESTREAM
+        
+        	createLive(obj, img);
+                
+        end
+        
+        %%
+        function liveStop(obj)
+        %LIVESTOP
+            createLive(obj, [])
+            
+        end
+
+        %%
+        function compose(obj)
+        %COMPOSE
+        
+            %%
+            %True if one is true. False if both are true, or both are false.
+            lapse_test_1 = xor(~isempty(obj.image_names), ...
+                               isempty(obj.image_path));
+
+            lapse_test_2 = xor(isempty(obj.image_names), ...
+                               ~isempty(obj.image_path));
+
+            %%
+            % Is this a timelapse from existing image files? 
+            if or(~isempty(obj.image_names), ~isempty(obj.image_path))
+                
+                timeLapse(obj);
+
+            %%
+            % Both |image_names| or |image_path| are empty, but the function
+            % |compose| is implemented directly. Here we will give the user
+            % a chance to select images using GUI. 
+            elseif and(lapse_test_1, lapse_test_2)
+                
+                % Types of images allowed.
+                allowed_image_formats = {...
+                              '*.jpeg;*.jpg;*.bmp;*.tif;*.tiff;*.png;*.gif', ...
+                              'Image Files (JPEG, BMP, TIFF, PNG and GIF)'};
+                  
+                % Header of the GUI opener.
+                gui_header = 'Select Images';
+                
+                try 
+                    
+                    % GUI opener.
+                    [file_names, file_path] = uigetfile(...
+                                               allowed_image_formats, ...
+                                               gui_header, 'multiselect', 'on');
+                     
+                    obj.image_names = file_names;
+                    obj.image_path = file_path; 
+                    
+                    total_files = length(file_names);
+                    % Telling the user what they've done!
+                    fprintf(sprintf(['\nTotal of <%d> files were ', ...
+                                     'selected from: <%s>.\n'], ...
+                                    total_files, file_path));
+                                
+                    timeLapse(obj);
+                    
+                    return; 
+                    
+                catch exception
+                    
+                    % A Runtime error that I couldn't think of to handle (i.e. 
+                    % beyond imagination error!) has occurred.
+                    error(sprintf(['Runtime Error:\n' ...
+                               '   %s \n' ...
+                               '   The process is terminated prematurely.'],...
+                               exception.message), exception.identifier);
+                    
+                end  % try (GUI opener)
+
+                
+            %%
+            % If either |image_names| or |image_path| is empty.
+            elseif or(lapse_test_1, lapse_test_2)
+                
+                % Show an error dialogue and explain why! 
+                error(sprintf( ...
+                    ['Value Error:\n' ...
+                     '   Timelapse values "image_names" or "image_path" '...
+                     'are set but do not meet the criteria. \n' ...
+                     'Please read the documentations for additional ' ... 
+                     'information.\n\n' ...
+                     '   The process is terminated prematurely.'])); %#ok<SPERR>   
+                
+            end  % if (timeLapse)
+
+        end  % function (create)
+
+
+    end  % methods (public)
+
+
+    %% Protected Methods
+    %
+    methods (Access=protected)
+
+        %%
+        %
+        function createLive(obj, live_image)
+        %CREATELIVE
+
+        
+            %% 
+            % For creating a video whilst generating images, the |video_object|
+            % must be defined as a *singleton* object. This means that one and 
+            % only one instance of this object can be created, unless it is 
+            % explicitly deleted. In MATLAB(R), this is achieved implicitly
+            % by defining a |persistent| variable.
+            persistent video_object
+
+            %%
+            % If there is no |video_object|, then it is the first time that this
+            % function is called.
+            %
+            % If, however, there is is a |video_object|, but there is no 
+            % |live_image|, this it is the last time that this function is 
+            % called, so the termination process is initiated, and the existing 
+            % |video_object|is removed.
+            
+            % There is no |video_object|.
+            if isempty(video_object)
+                
+                if isempty(obj.savingPath)
+                    obj.savingPath = [];
+                end
+
+                video_object = videoObject(obj);
+
+                fprintf('\nCompiling frames to video...\n');
+
+                           
+            %%
+            % There is a |video_object|, but no |live_image|.
+            elseif and(~isempty(video_object), isempty(live_image))
+
+                % Done with the video object: file closed. 
+                close(video_object); 
+
+                % Singleton object removed.
+                delete(video_object);
+                
+                fprintf('\n.......... compilation finished.\n');
+
+                % If we've got so far with no error, then all's gone well! 
+                % The user is hereby informed through a message box!
+                fprintf(['\n>> Operation Completed. \n\n'...
+                         'Video was successfully created and saved into the'...
+                         ' designated path.\n']);
+                     
+                     
+                % No need for the rest of the function to run. 
+                return;  % Process is terminated.  
+                
+            end  % if
+            
+            
+            %%
+            % If there is a scale factor 
+            % (someone was adventurous and changed my constant!)
+            if obj.SCALE_FACTOR ~= 1
+
+                % Scale as specified. 
+                current_image = imresize(live_image, ...
+                                         obj.SCALE_FACTOR, ...
+                                         obj.RESIZE_ALGORITHM);
+
+            else
+
+                current_image = live_image; 
+
+            end  % if
+
+
+            try 
+
+                % Create and open the file.
+                open(video_object);
+
+                % Writing the video object into the file.
+                writeVideo(video_object, current_image);
+
+                return;  % Function terminated.
+
+            catch exception
+
+                % A Runtime error that I couldn't think of to handle (i.e. 
+                % beyond imagination error!) has occurred.
+                error(sprintf('Runtime Error:\n   %s', ...
+                              exception.message), exception.identifier);
+
+            end  % try 
+
+        end  % function (createLive)
+
+
+        %%
+        %
+        function timeLapse(obj)
+        %TIMELAPSE
+            
+            file_count = length(obj.image_names);
+
+            video_object = videoObject(obj);
+
+            %%
+            %  
+            try 
+
+                % Create and open the file.
+                open(video_object);
+
+                % Initiate progress bar.
+                progress_bar = waitbar(0, 'Please wait...');
+
+                for iter=1:file_count
+
+                    img_path = strcat(obj.image_path, ...
+                                      obj.image_names{iter});
+                                 
+                    % Read the image from the file. 
+                    current_image = imread(obj.savingPath, img_path);
+
+                    
+                    % If there is a scale factor 
+                    % (someone was adventurous and changed my constant!)
+                    if obj.SCALE_FACTOR ~= 1
+
+                        % Scale as specified. 
+                        current_image = imresize(current_image, ...
+                                                 obj.SCALE_FACTOR, ...
+                                                 obj.RESIZE_ALGORITHM);
+
+                    end
+
+                    % Writing the video object into the file.
+                    writeVideo(video_object, current_image);
+
+                    % Preview image (once every 10 frames.)
+                    if mod(iter, ...
+                           round(file_count/obj.DISPLAY_INTERVALS)) == 1
+
+                        imshow(current_image) % Display where we are. 
+
+                        % Set title. 
+                        title(sprintf('Preview image %d/%d', ...
+                                      iter, ...
+                                      file_count))
+
+                        % Bring the progress bar window to front. It might 
+                        % go to the back when the image is displayed. 
+                        uistack(progress_bar, 'top')
+
+                    end % if (preview)
+
+                    % Update progress bar... We're making progress ;)
+                    waitbar(iter/file_count, progress_bar);
+
+                end  % for (image iterator)
+
+                % Done with the progress bar. This does what it says!
+                delete(progress_bar); 
+
+                % Ditto ;) Done with the video object: file closed. 
+                close(video_object); 
+
+                % If we've got so far with no error, then all's gone well! 
+                % The user is hereby informed through a message box!
+                msgbox(sprintf(...
+                        ['Operation Completed. \n\n'...
+                         'Video was successfully created and saved into the'...
+                         ' designated path.\n']));
+                     
+                return;  % Function terminated.
+
+            catch exception
+
+                % A Runtime error that I couldn't think of to handle (i.e. 
+                % beyond imagination error!) has occurred.
+                error(sprintf('Runtime Error:\n   %s', ...
+                              exception.message), exception.identifier);
+
+            end  % try 
+
+        end  % function(timeLapse)
+    
+    end  % methods (protected)
+
+
+    %% Private and Sealed Methods
+    %
+    methods (Sealed=true, Access=private)
+        
+        %%
+        %
+        function video_object = videoObject(obj)
+        %INSTANTIATEVIDEO
+            
+            %%
+            % Instantiating a video object and setting the properties. 
+            try
+                fprintf('\nInitiating the video object...');
+
+                % VideoWrite instantiated. 
+                video_object = VideoWriter(obj.savingPath, obj.vid_profile);    
+
+                % Framerate set.           
+                video_object.FrameRate = obj.framerate;
+
+                % Quality set. 
+%                 video_object.Quality = obj.PICTURE_QUALITY;
+                
+                fprintf('.......... Initiated.\n');
+                return;  % All done. 
+
+            catch exception
+
+                % A Runtime error that I couldn't think of to handle (i.e. beyond
+                % imagination error!) has occurred.
+                error(sprintf('Runtime Error:\n   %s', ...
+                              exception.message), exception.identifier);
+
+            end  % try
+
+        end  % function (instantiateVideo)
+        
+
+        %% Verify the 'save as' path
+        %
+        function viability = testPath(~, path)
+        %TESTPATH
+
+
+            % Testing the viability of the path.
+            %
+            % For instance, does the user have sufficient permission to write
+            % in this directory? or is the disk healthy? 
+            try
+                fprintf('\nTesting the path...');
+
+                % Create and open a file in the given path. 
+                test_file = fopen(path, 'w'); 
+
+                % Write into the file. 
+                fprintf(test_file,'testing the file.'); 
+
+                % Close the file object.
+                fclose(test_file);
+
+                % Does what it says! Deletes the test file.
+                delete(path)
+                
+                % I/O test passed. 
+                viability = true;
+                
+                fprintf('.......... Passed.\n');
+                return;
+
+            catch exception
+
+                % There has been a problem with writing files in the given
+                % path; most likely something to do with ownership or
+                % permissions - but you never know! So the actual message
+                % generated by MATLAB(R) is displayed.
+                error(sprintf(['I/O Error:\n' ...
+                               '   %s \n' ...
+                               '   The process is terminated prematurely.'],...
+                              exception.message), exception.identifier);
+                
+            end  % try (saving path test)
+            
+        end  % function (testPath)
+    
+
+    end  % methods (sealed and private)
+    
+
+end  % class
+
+%% VIM (a unix editor) specific settings. 
+% *Do not modify.*
+%
+% Indentation level = 4 spaces. 
+% Tab = 4 spaces (Tabs disabled).
+% Width standard: 80 column.
+% 
+
+% vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+
+##### SOURCE END #####
+--></body></html>

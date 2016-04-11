@@ -1,0 +1,218 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>getTE</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-01-31"><meta name="DC.source" content="getTE.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">function</span> [ final_data ] = getTE( time_length, te_values )
+<span class="comment">%GETTE Summary of this function goes here</span>
+<span class="comment">%   Detailed explanation goes here</span>
+
+    min_args = uint8(0);            <span class="comment">% Min args in.</span>
+    max_args = uint8(2);            <span class="comment">% Max args in.</span>
+    narginchk(min_args, max_args);  <span class="comment">% Check number of args in.</span>
+
+    <span class="keyword">if</span> ~exist(<span class="string">'te_values'</span>, <span class="string">'var'</span>)
+
+        te_values  = zeros(1, time_length);
+
+    <span class="keyword">else</span>
+        te_values = cast(te_values, <span class="string">'double'</span>);
+    <span class="keyword">end</span>
+
+    condition = false;
+
+    <span class="comment">% Figure for entering TE (echo time) values.</span>
+    te_input_fig = figure(<span class="string">'Name'</span>, <span class="string">'TE'</span>, <span class="string">'Position'</span>, [300 100 160 300]);
+
+
+    <span class="comment">% Even loop.</span>
+    <span class="keyword">while</span> ~condition
+
+        t = uitable(te_input_fig,<span class="keyword">...</span>
+            <span class="string">'Data'</span>, te_values',<span class="keyword">...</span><span class="comment">                    % Default values.</span>
+            <span class="string">'Position'</span>, [10 50 140 220],<span class="keyword">...</span><span class="comment">           % Dimensions.</span>
+            <span class="string">'ColumnWidth'</span>,{100}, <span class="keyword">...</span><span class="comment">                  % Column width (pixels).</span>
+            <span class="string">'ColumnEditable'</span>, true, <span class="keyword">...</span><span class="comment">               % Editable cells.</span>
+            <span class="string">'ColumnName'</span>, {<span class="string">'TE values'</span>});             <span class="comment">% Column name.</span>
+
+        set(gcf, <span class="keyword">...</span>
+            <span class="string">'ToolBar'</span>, <span class="string">'none'</span>, <span class="keyword">...</span><span class="comment">                    % Toolbar not shown.</span>
+            <span class="string">'MenuBar'</span>, <span class="string">'none'</span>);                       <span class="comment">% Menubar not shown.</span>
+
+        <span class="comment">% Button</span>
+        uicontrol(<span class="string">'Style'</span>, <span class="string">'pushbutton'</span>, <span class="keyword">...</span>
+                      <span class="string">'String'</span>, <span class="string">'Submit'</span>,<span class="keyword">...</span><span class="comment">          % Text.</span>
+                      <span class="string">'Position'</span>, [5 12 150 30],<span class="keyword">...</span><span class="comment">   % Dimensions.</span>
+                      <span class="string">'Callback'</span>, <span class="keyword">...</span><span class="comment">                 % Action.</span>
+                      <span class="string">'uiresume(gcbf)'</span>);
+        <span class="comment">% Label.</span>
+        uicontrol(<span class="string">'Style'</span>, <span class="string">'text'</span>, <span class="keyword">...</span>
+                  <span class="string">'Position'</span>, [-20 280 200 10],<span class="keyword">...</span><span class="comment">    % Dimensions.</span>
+                  <span class="string">'String'</span>, <span class="keyword">...</span><span class="comment">                       % Text.</span>
+                  <span class="string">'Enter the echo time (TE) values'</span>);
+
+        snapnow;
+
+        uiwait(te_input_fig);
+        [condition, values] = verifyData(t.Data);
+
+    <span class="keyword">end</span>
+
+    <span class="keyword">function</span> [cnd, verified_data] = verifyData(te_data)
+        <span class="keyword">if</span> isa(te_data, <span class="string">'double'</span>) &amp;&amp; ~all(te_data == 0)
+            verified_data = te_data;
+            cnd = true;
+        <span class="keyword">else</span>
+            error_msg = sprintf([<span class="string">'Invalid input.\n'</span>, <span class="keyword">...</span>
+                                 <span class="string">'The input must be nummeric and integer.\n'</span>,<span class="keyword">...</span>
+                                 <span class="string">'Floating points will be rounded.'</span>]);
+            errordlg(error_msg, <span class="string">'Input Error'</span>);
+            cnd = false;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    close(te_input_fig);
+    final_data = uint32(transpose(values));
+
+<span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="getTE_01.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+function [ final_data ] = getTE( time_length, te_values )
+%GETTE Summary of this function goes here
+%   Detailed explanation goes here
+
+    min_args = uint8(0);            % Min args in.
+    max_args = uint8(2);            % Max args in.
+    narginchk(min_args, max_args);  % Check number of args in. 
+    
+    if ~exist('te_values', 'var')
+        
+        te_values  = zeros(1, time_length);  
+
+    else
+        te_values = cast(te_values, 'double');
+    end
+    
+    condition = false; 
+    
+    % Figure for entering TE (echo time) values. 
+    te_input_fig = figure('Name', 'TE', 'Position', [300 100 160 300]); 
+    
+
+    % Even loop.
+    while ~condition
+        
+        t = uitable(te_input_fig,...
+            'Data', te_values',...                    % Default values.
+            'Position', [10 50 140 220],...           % Dimensions.
+            'ColumnWidth',{100}, ...                  % Column width (pixels).
+            'ColumnEditable', true, ...               % Editable cells.
+            'ColumnName', {'TE values'});             % Column name.
+
+        set(gcf, ...
+            'ToolBar', 'none', ...                    % Toolbar not shown.
+            'MenuBar', 'none');                       % Menubar not shown.      
+
+        % Button
+        uicontrol('Style', 'pushbutton', ...
+                      'String', 'Submit',...          % Text.
+                      'Position', [5 12 150 30],...   % Dimensions.
+                      'Callback', ...                 % Action.
+                      'uiresume(gcbf)');
+        % Label.
+        uicontrol('Style', 'text', ...
+                  'Position', [-20 280 200 10],...    % Dimensions.
+                  'String', ...                       % Text.
+                  'Enter the echo time (TE) values'); 
+        
+        snapnow;
+        
+        uiwait(te_input_fig);
+        [condition, values] = verifyData(t.Data);
+              
+    end
+    
+    function [cnd, verified_data] = verifyData(te_data)
+        if isa(te_data, 'double') && ~all(te_data == 0)
+            verified_data = te_data;
+            cnd = true;
+        else
+            error_msg = sprintf(['Invalid input.\n', ...
+                                 'The input must be nummeric and integer.\n',...
+                                 'Floating points will be rounded.']);
+            errordlg(error_msg, 'Input Error');
+            cnd = false;
+        end
+    end
+    
+    close(te_input_fig);
+    final_data = uint32(transpose(values));
+    
+end
+
+
+##### SOURCE END #####
+--></body></html>

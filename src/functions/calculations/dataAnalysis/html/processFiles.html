@@ -1,0 +1,517 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>processFiles</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-01-31"><meta name="DC.source" content="processFiles.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#3">Constants</a></li><li><a href="#4">Regular Expressions</a></li><li><a href="#5">Calculate the logistics</a></li><li><a href="#6">Initialise the progress bar</a></li><li><a href="#7">Initialise the output structure</a></li><li><a href="#8">Preliminary calculation</a></li><li><a href="#11">Label or 4D</a></li><li><a href="#12">Labels</a></li><li><a href="#14">TE (Echo time)</a></li><li><a href="#16">4 Dimensional.</a></li><li><a href="#18">Error Handling</a></li><li><a href="#20">Progress bar value</a></li></ul></div><pre class="codeinput"><span class="keyword">function</span> [ properties ] = processFiles( file_names, file_path, white_matter_index, echo_time__TE )
+</pre><pre class="codeinput"><span class="comment">%PROCESSFILES Summary of this function goes here</span>
+<span class="comment">%   Detailed explanation goes here</span>
+</pre><h2>Constants<a name="3"></a></h2><pre class="codeinput">RELATED_FILES = uint8(2);  <span class="comment">% One logical, and one 4D.</span>
+</pre><h2>Regular Expressions<a name="4"></a></h2><p>Display the regex args to the user; mainly for information. They are explicitly advised not to modify it.</p><pre class="codeinput">input_msg = sprintf([<span class="string">'\nDo NOT modify this unless you are absolutely sure '</span> <span class="keyword">...</span>
+                     <span class="string">'about what you''re doing, or you will get errors or '</span> <span class="keyword">...</span>
+                     <span class="string">'unexpected outputs.\n\nExpressions must start with '</span>  <span class="keyword">...</span>
+                     <span class="string">'"(?:s|S)". The arrangement of data and gender args '</span>  <span class="keyword">...</span>
+                     <span class="string">'must not not be changed.\n\nFor more info on regex '</span>  <span class="keyword">...</span>
+                     <span class="string">'args, visit: http://regexr.com/\n'</span>]);
+<span class="comment">% Default regex.</span>
+expression = <span class="string">'^(?:s|S)(\d+)(?:-)([mMfF])(\d+)(?:-)(?:.)\w+'</span>;  <span class="comment">% regex.</span>
+
+
+new_expression = inputdlg(input_msg, <span class="string">'Regex args'</span>, [1 150], {expression});
+snapnow;
+waitfor(new_expression);
+
+<span class="comment">% In case it is modified for some reason, new regex.</span>
+<span class="keyword">if</span> ~strcmp(expression, new_expression)
+    expression = new_expression;
+<span class="keyword">end</span>
+</pre><h2>Calculate the logistics<a name="5"></a></h2><pre class="codeinput">sorted_names = sort(file_names);          <span class="comment">% File names alphabetically sorted.</span>
+total_files  = numel(file_names);         <span class="comment">% Total number of file selected.</span>
+
+
+<span class="comment">% Seriously, you won't be using more than the capacity of |uint16| number of</span>
+<span class="comment">% files with this function, unless you are using parallel computing, in which</span>
+<span class="comment">% case you will have to change |for| to |parfor| in this function. You can then</span>
+<span class="comment">% change the capacity too!</span>
+<span class="keyword">if</span> not(uint16(rem(total_files, RELATED_FILES)))
+
+    <span class="comment">% Total number of subjects.</span>
+    total_subjects = uint16(numel(file_names)/RELATED_FILES);
+
+<span class="keyword">else</span>
+
+    <span class="comment">% Gotcha! ;)</span>
+    error([<span class="string">'Input Error:\n   An even number of files with bilateral '</span><span class="keyword">...</span>
+           <span class="string">'relations must be selected.'</span>]);
+
+<span class="keyword">end</span>
+</pre><h2>Initialise the progress bar<a name="6"></a></h2><pre class="codeinput">loop_time    = 0;
+msg_unstruct = <span class="string">'Processing the files.\nPlease wait... ~ %0.0f seconds left.'</span>;
+progress_msg = sprintf(msg_unstruct, loop_time);
+progress_bar = waitbar(0, progress_msg);
+uistack(progress_bar, <span class="string">'top'</span>);
+</pre><img vspace="5" hspace="5" src="processFiles_01.png" alt=""> <h2>Initialise the output structure<a name="7"></a></h2><p>Initialising a <tt>struct</tt> that will contain the data.</p><pre class="codeinput">properties = struct();
+
+<span class="comment">% Initialisation of the cells in the struct.</span>
+                                                               <span class="comment">% Unique params.</span>
+                                                               <span class="comment">%----------------</span>
+properties.file_names   = cell(RELATED_FILES, total_subjects); <span class="comment">% filepath.</span>
+properties.study_number = cell(1, total_subjects);             <span class="comment">% Study number.</span>
+properties.sex          = cell(1, total_subjects);             <span class="comment">% Gender.</span>
+properties.gab          = cell(1, total_subjects);             <span class="comment">% GAB.</span>
+properties.segment_vol  = cell(1, total_subjects);             <span class="comment">% Segment volume.</span>
+properties.t2_average   = cell(1, total_subjects);             <span class="comment">% Average T2.</span>
+
+                                                  <span class="comment">% Universal params.</span>
+                                                  <span class="comment">%-----------------------------</span>
+properties.time_length    = NaN;                  <span class="comment">% Total timeframes.</span>
+properties.total_files    = total_files;          <span class="comment">% Total number of files read.</span>
+properties.total_subjects = total_files / 2;      <span class="comment">% Two files for each subject.</span>
+</pre><h2>Preliminary calculation<a name="8"></a></h2><p>Reading the NifTi files and conducting the preliminary calculations, including the <i>average T2</i> and <i>segment volume</i>.</p><pre class="codeinput">tic;
+
+<span class="keyword">for</span> index=1:total_files
+</pre><pre class="codeinput">    <span class="comment">% File name.</span>
+    name = sorted_names{index};
+
+    <span class="keyword">try</span>  <span class="comment">% To handle possible error. Further explanations in |catch|.</span>
+</pre><pre class="codeinput">        <span class="comment">% Extracting data from file names using regular expressions |regexp|.</span>
+        matched_args = regexp(name, expression, <span class="string">'tokens'</span>);
+</pre><h2>Label or 4D<a name="11"></a></h2><p>Check whether the file being read is a <i>label of segments</i> or a <i>4 dimensional</i> image.</p><h2>Labels<a name="12"></a></h2><pre class="codeinput">        <span class="keyword">if</span> not(isempty(strfind(name, <span class="string">'label'</span>)))  <span class="comment">% Labels (bin file)</span>
+</pre><pre class="codeinput">            <span class="comment">% File number (rounded to the next integer).</span>
+            cell_index = ceil(index/RELATED_FILES);
+
+            <span class="comment">% Subject's file name stored.</span>
+            properties.file_names{1, cell_index} = name;
+
+            <span class="comment">% Subject's study number stored.</span>
+            properties.study_number{cell_index}  = <span class="keyword">...</span>
+                                        uint16(str2double(matched_args{1}{1}));
+            <span class="comment">% Subject's gender stored.</span>
+            properties.sex{cell_index} = matched_args{1}{2};
+
+            <span class="comment">% Subject's GAB stored.</span>
+            properties.gab{cell_index} = uint8(str2double(matched_args{1}{3}));
+
+            <span class="comment">% NifTi file read.</span>
+            nii_logical = nii_read(strcat(file_path, name));
+
+            <span class="comment">% Logical mask created to extract the segment.</span>
+            nii_logical = nii_logical == white_matter_index;
+
+            <span class="comment">% Subject's segment_volume stored.</span>
+            properties.segment_vol{cell_index} = sum(nii_logical(:));
+</pre><h2>TE (Echo time)<a name="14"></a></h2><p>If given as an input argument, the echo time <img src="processFiles_eq05767591624105561146.png" alt="$TE$">, is confirmed with the user. If not; the user will be asked to produce one, the maximum is physically restricted to the maximum timeframes available in the file. This occures only if <tt>property.time_length = NaN</tt>, typically during the first or second iteration (depending on where the first one is the 4D file or mask.</p><p>Note: <tt>echo_time__TE</tt> must exist before <tt>T2Map</tt> can be called.</p><pre class="codeinput">            <span class="keyword">if</span> isnan(properties.time_length) &amp;&amp; exist(<span class="string">'echo_time__TE'</span>, <span class="string">'var'</span>)
+
+                <span class="comment">% 4D total timeframes.</span>
+                properties.time_length   = size(nii_4d, 4);
+
+                <span class="comment">% Confirmation requested from the user.</span>
+                properties.echo_time__TE = <span class="keyword">...</span>
+                                   getTE(properties.time_length, echo_time__TE);
+                tic;
+
+            <span class="keyword">elseif</span> isnan(properties.time_length) &amp;&amp; <span class="keyword">...</span>
+                                                ~exist(<span class="string">'echo_time__TE'</span>, <span class="string">'var'</span>)
+
+                <span class="comment">% 4D total timeframes.</span>
+                properties.time_length   = size(nii_4d, 4);
+
+                <span class="comment">% User asked to enter TE values.</span>
+                properties.echo_time__TE = getTE(time_length);
+
+                tic;
+
+            <span class="keyword">end</span>  <span class="comment">% test(echo_time__TE).</span>
+</pre><p>T2 values have been retrieved and will be passed onto the <tt>T2Map</tt> function.</p><p>If the last value (optional argument) passed to the <tt>T2Map</tt> function is not <tt>false</tt> (note that the default value is <tt>true</tt>), a T2 regression plot is created. You don't want that to happen in a loop.</p><pre class="codeinput">            t2_val = T2Map(properties.echo_time__TE, nii_4d, <span class="keyword">...</span>
+                           nii_logical, false);
+
+            <span class="comment">% Subject's average T2 value stored.</span>
+            properties.t2_average{cell_index} = mean(t2_val(~isnan(t2_val)));
+
+            <span class="keyword">continue</span>;
+</pre><pre class="codeoutput">
+
+Files were processed in 30.80 seconds.
+
+
+Results:  = 
+
+        file_names: {2x70 cell}
+      study_number: {1x70 cell}
+               sex: {1x70 cell}
+               gab: {1x70 cell}
+       segment_vol: {1x70 cell}
+        t2_average: {1x70 cell}
+       time_length: 10
+       total_files: 140
+    total_subjects: 70
+     echo_time__TE: [13 16 20 25 30 40 50 85 100 150]
+
+</pre><h2>4 Dimensional.<a name="16"></a></h2><pre class="codeinput">        <span class="keyword">elseif</span> not(isempty(strfind(name, <span class="string">'qt2'</span>)))  <span class="comment">% qt2 (4D file)</span>
+
+            <span class="comment">% Subject's file name is stored.</span>
+            properties.file_names{2, ceil(index/RELATED_FILES)} = name;
+
+            <span class="comment">% Read the NifTi mask.</span>
+            nii_4d = nii_read(strcat(file_path, name));
+
+        <span class="keyword">end</span>  <span class="comment">% if (label or qt2)</span>
+</pre><h2>Error Handling<a name="18"></a></h2><p>In case a <tt>Runtime</tt> error occures whilst handling the files. Such an error will most like be caused by a corrupt file or one that is already open elsewhere.</p><pre class="codeinput">    <span class="keyword">catch</span> exception
+
+        error_msg = <span class="keyword">...</span>
+            [sprintf([<span class="string">'Runtime Error:\n'</span>,                                   <span class="keyword">...</span>
+                     <span class="string">'   An error was encountered when processing the file '</span><span class="keyword">...</span>
+                     <span class="string">'entitled &lt;%s&gt;.'</span>                                       <span class="keyword">...</span>
+                     <span class="string">'This is most probably caused by an I/O error; that '</span>  <span class="keyword">...</span>
+                     <span class="string">'is, corrupt file, or one that is alreadt in use '</span>     <span class="keyword">...</span>
+                     <span class="string">'elsewhere.\n\nThe application is terminated.\n\n'</span>],   <span class="keyword">...</span>
+                     name),                                                 <span class="keyword">...</span>
+                     exception.identifier, <span class="string">': '</span>, exception.message];
+
+        error(error_msg);
+
+    <span class="keyword">end</span> <span class="comment">% try</span>
+</pre><h2>Progress bar value<a name="20"></a></h2><p>Calculating the arguments for the progress bar.</p><pre class="codeinput">    <span class="keyword">if</span> rem(single(index), 10) == 1  <span class="comment">% Update remaining time once every 10 iters.</span>
+
+        ind = single(index);
+
+        <span class="comment">% Time remaining.</span>
+        loop_time = (toc/ind)*(total_files-ind+1);
+
+        <span class="comment">% Generating the text with the updated waiting time.</span>
+        progress_msg = sprintf(msg_unstruct, loop_time);
+
+        <span class="comment">% Update the progress bar.</span>
+        waitbar(single(index)/single(total_files), progress_bar, progress_msg);
+
+    <span class="keyword">else</span> <span class="comment">% Only update the progress during every other iter.</span>
+
+        waitbar(single(index)/single(total_files), progress_bar, progress_msg);
+
+    <span class="keyword">end</span>  <span class="comment">% if (progress bar value)</span>
+</pre><img vspace="5" hspace="5" src="processFiles_02.png" alt=""> <img vspace="5" hspace="5" src="processFiles_03.png" alt=""> <img vspace="5" hspace="5" src="processFiles_04.png" alt=""> <img vspace="5" hspace="5" src="processFiles_05.png" alt=""> <img vspace="5" hspace="5" src="processFiles_06.png" alt=""> <img vspace="5" hspace="5" src="processFiles_07.png" alt=""> <img vspace="5" hspace="5" src="processFiles_08.png" alt=""> <img vspace="5" hspace="5" src="processFiles_09.png" alt=""> <img vspace="5" hspace="5" src="processFiles_10.png" alt=""> <img vspace="5" hspace="5" src="processFiles_11.png" alt=""> <img vspace="5" hspace="5" src="processFiles_12.png" alt=""> <img vspace="5" hspace="5" src="processFiles_13.png" alt=""> <img vspace="5" hspace="5" src="processFiles_14.png" alt=""> <img vspace="5" hspace="5" src="processFiles_15.png" alt=""> <pre class="codeinput"><span class="keyword">end</span>  <span class="comment">% for (total_files)</span>
+
+<span class="comment">% Finished processing the files.</span>
+fprintf(sprintf(<span class="string">'\n\nFiles were processed in %0.2f seconds.\n\n'</span>, toc));
+
+<span class="comment">% Progress bar ... no more!</span>
+delete(progress_bar);
+
+display(properties, <span class="string">'Results: '</span>);
+</pre><pre class="codeinput"><span class="keyword">end</span>  <span class="comment">% function</span>
+</pre><pre class="codeoutput">
+The programme was terminated by the user.
+
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+function [ properties ] = processFiles( file_names, file_path, white_matter_index, echo_time__TE )
+%PROCESSFILES Summary of this function goes here
+%   Detailed explanation goes here
+
+
+%% Constants
+RELATED_FILES = uint8(2);  % One logical, and one 4D. 
+
+
+
+%% Regular Expressions
+% Display the regex args to the user; mainly for information. They are
+% explicitly advised not to modify it. 
+input_msg = sprintf(['\nDo NOT modify this unless you are absolutely sure ' ...
+                     'about what you''re doing, or you will get errors or ' ...
+                     'unexpected outputs.\n\nExpressions must start with '  ...
+                     '"(?:s|S)". The arrangement of data and gender args '  ...
+                     'must not not be changed.\n\nFor more info on regex '  ...
+                     'args, visit: http://regexr.com/\n']);
+% Default regex.
+expression = '^(?:s|S)(\d+)(?:-)([mMfF])(\d+)(?:-)(?:.)\w+';  % regex.
+
+
+new_expression = inputdlg(input_msg, 'Regex args', [1 150], {expression});
+snapnow;
+waitfor(new_expression);
+
+% In case it is modified for some reason, new regex. 
+if ~strcmp(expression, new_expression)
+    expression = new_expression;
+end
+
+%% Calculate the logistics
+
+sorted_names = sort(file_names);          % File names alphabetically sorted.
+total_files  = numel(file_names);         % Total number of file selected.
+
+
+% Seriously, you won't be using more than the capacity of |uint16| number of
+% files with this function, unless you are using parallel computing, in which
+% case you will have to change |for| to |parfor| in this function. You can then
+% change the capacity too!
+if not(uint16(rem(total_files, RELATED_FILES)))
+    
+    % Total number of subjects.
+    total_subjects = uint16(numel(file_names)/RELATED_FILES); 
+    
+else
+    
+    % Gotcha! ;)
+    error(['Input Error:\n   An even number of files with bilateral '...
+           'relations must be selected.']);
+       
+end
+
+
+%% Initialise the progress bar
+loop_time    = 0; 
+msg_unstruct = 'Processing the files.\nPlease wait... ~ %0.0f seconds left.';
+progress_msg = sprintf(msg_unstruct, loop_time);
+progress_bar = waitbar(0, progress_msg);
+uistack(progress_bar, 'top');
+
+%% Initialise the output structure
+% Initialising a |struct| that will contain the data.
+properties = struct();
+
+% Initialisation of the cells in the struct. 
+                                                               % Unique params.
+                                                               %REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+properties.file_names   = cell(RELATED_FILES, total_subjects); % filepath.
+properties.study_number = cell(1, total_subjects);             % Study number.
+properties.sex          = cell(1, total_subjects);             % Gender.
+properties.gab          = cell(1, total_subjects);             % GAB.
+properties.segment_vol  = cell(1, total_subjects);             % Segment volume.
+properties.t2_average   = cell(1, total_subjects);             % Average T2.
+
+                                                  % Universal params. 
+                                                  %REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+properties.time_length    = NaN;                  % Total timeframes.                           
+properties.total_files    = total_files;          % Total number of files read.
+properties.total_subjects = total_files / 2;      % Two files for each subject.
+
+
+%% Preliminary calculation
+% Reading the NifTi files and conducting the preliminary calculations, including
+% the _average T2_ and _segment volume_. 
+
+tic;
+
+for index=1:total_files
+    
+    % File name.
+    name = sorted_names{index};
+    
+    try  % To handle possible error. Further explanations in |catch|.
+
+        % Extracting data from file names using regular expressions |regexp|.
+        matched_args = regexp(name, expression, 'tokens');
+
+        %% Label or 4D
+        % Check whether the file being read is a _label of segments_ or a 
+        % _4 dimensional_ image.
+        
+        %% Labels
+        if not(isempty(strfind(name, 'label')))  % Labels (bin file)
+
+            % File number (rounded to the next integer).
+            cell_index = ceil(index/RELATED_FILES);
+            
+            % Subject's file name stored.
+            properties.file_names{1, cell_index} = name;
+
+            % Subject's study number stored.
+            properties.study_number{cell_index}  = ...
+                                        uint16(str2double(matched_args{1}{1})); 
+            % Subject's gender stored.              
+            properties.sex{cell_index} = matched_args{1}{2};
+            
+            % Subject's GAB stored.
+            properties.gab{cell_index} = uint8(str2double(matched_args{1}{3}));
+
+            % NifTi file read. 
+            nii_logical = nii_read(strcat(file_path, name));
+            
+            % Logical mask created to extract the segment. 
+            nii_logical = nii_logical == white_matter_index;
+            
+            % Subject's segment_volume stored. 
+            properties.segment_vol{cell_index} = sum(nii_logical(:));
+                
+            %% TE (Echo time)
+            % If given as an input argument, the echo time $TE$, is confirmed 
+            % with the user. If not;
+            % the user will be asked to produce one, the maximum is
+            % physically restricted to the maximum timeframes available in the
+            % file. This occures only if |property.time_length = NaN|, typically
+            % during the first or second iteration (depending on where the first
+            % one is the 4D file or mask. 
+            %
+            % Note: |echo_time__TE| must exist before |T2Map| can be called. 
+            if isnan(properties.time_length) && exist('echo_time__TE', 'var')
+                
+                % 4D total timeframes. 
+                properties.time_length   = size(nii_4d, 4);
+                
+                % Confirmation requested from the user.
+                properties.echo_time__TE = ...
+                                   getTE(properties.time_length, echo_time__TE);
+                tic;
+            
+            elseif isnan(properties.time_length) && ...
+                                                ~exist('echo_time__TE', 'var')
+                
+                % 4D total timeframes. 
+                properties.time_length   = size(nii_4d, 4);
+                
+                % User asked to enter TE values. 
+                properties.echo_time__TE = getTE(time_length);
+                
+                tic;
+                
+            end  % test(echo_time__TE).
+            
+            %%
+            % T2 values have been retrieved and will be passed onto the |T2Map| 
+            % function. 
+            %
+            % If the last value (optional argument) passed to the |T2Map| 
+            % function is not |false| (note that the default value is |true|), a 
+            % T2 regression plot is created. You don't want that to happen in 
+            % a loop. 
+            t2_val = T2Map(properties.echo_time__TE, nii_4d, ...
+                           nii_logical, false);
+                       
+            % Subject's average T2 value stored.
+            properties.t2_average{cell_index} = mean(t2_val(~isnan(t2_val)));
+
+            continue;
+            
+        %% 4 Dimensional.
+        elseif not(isempty(strfind(name, 'qt2')))  % qt2 (4D file)
+
+            % Subject's file name is stored.
+            properties.file_names{2, ceil(index/RELATED_FILES)} = name;     
+
+            % Read the NifTi mask. 
+            nii_4d = nii_read(strcat(file_path, name));
+
+        end  % if (label or qt2)
+    
+    %% Error Handling
+    % In case a |Runtime| error occures whilst handling the files. Such an error
+    % will most like be caused by a corrupt file or one that is already open
+    % elsewhere. 
+    catch exception
+        
+        error_msg = ...
+            [sprintf(['Runtime Error:\n',                                   ...
+                     '   An error was encountered when processing the file '...
+                     'entitled <%s>.'                                       ...
+                     'This is most probably caused by an I/O error; that '  ... 
+                     'is, corrupt file, or one that is alreadt in use '     ...
+                     'elsewhere.\n\nThe application is terminated.\n\n'],   ...
+                     name),                                                 ...
+                     exception.identifier, ': ', exception.message];
+        
+        error(error_msg);
+        
+    end % try
+    
+    
+    %% Progress bar value
+    % Calculating the arguments for the progress bar.
+    if rem(single(index), 10) == 1  % Update remaining time once every 10 iters. 
+        
+        ind = single(index);
+        
+        % Time remaining. 
+        loop_time = (toc/ind)*(total_files-ind+1);
+        
+        % Generating the text with the updated waiting time. 
+        progress_msg = sprintf(msg_unstruct, loop_time);
+        
+        % Update the progress bar.
+        waitbar(single(index)/single(total_files), progress_bar, progress_msg);
+        
+    else % Only update the progress during every other iter. 
+        
+        waitbar(single(index)/single(total_files), progress_bar, progress_msg);
+        
+    end  % if (progress bar value)
+    
+end  % for (total_files)
+
+% Finished processing the files.
+fprintf(sprintf('\n\nFiles were processed in %0.2f seconds.\n\n', toc));
+
+% Progress bar ... no more! 
+delete(progress_bar);
+
+display(properties, 'Results: ');
+
+end  % function
+
+
+##### SOURCE END #####
+--></body></html>

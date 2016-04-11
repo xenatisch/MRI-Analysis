@@ -1,0 +1,578 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>exportAvi</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-12-25"><meta name="DC.source" content="exportAvi.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#3">Defining constants</a></li><li><a href="#4">Verification of parameters.</a></li></ul></div><pre class="codeinput"><span class="keyword">function</span> [  ] = exportAvi( object, path, framerate, quality )
+</pre><pre class="codeinput"><span class="comment">%EXPORTAVI Summary of this function goes here</span>
+<span class="comment">%   Detailed explanation goes here</span>
+</pre><h2>Defining constants<a name="3"></a></h2><p><b>Persistent</b>: <tt>persistent</tt> constants are used so that once a place is allocated to these constants on the memory, it is held for as long as the application is open. It differs to <tt>global</tt> in that these constants are not available outside this function. However, it optimises the application in that it eliminates the need for the reintroduction of these constants every time the function in invoked. It also makes the use of RAM more efficient by ensuring consecutive allocations where possible. These variables are additionally useful if the code is converted into C.</p><p>AVI encoding profiles (as described in MATLAB&reg; documentations:</p><p>
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;border-color:#999;margin:0px auto;}
+.tg td{font-family:Arial, sans-serif;font-size:11px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:#999;color:#444;background-color:#F7FDFA;}
+.tg th{font-family:Arial, sans-serif;font-size:11px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:#999;color:#fff;background-color:#26ADE4;}
+.tg .tg-yw4l{vertical-align:top}
+</style>
+<table class="tg">
+  <tr><th class="tg-yw4l">Profile</th><th class="tg-yw4l">Description</th></tr>
+  <tr><td class="tg-yw4l">Archival</td><td class="tg-yw4l">Motion JPEG 2000 file with lossless compression.</td></tr>
+  <tr><td class="tg-yw4l">Motion JPEG AVI</td><td class="tg-yw4l">AVI file using Motion JPEG encoding.</td></tr>
+  <tr><td class="tg-yw4l">Motion JPEG 2000</td><td class="tg-yw4l">Motion JPEG 2000 file.</td></tr>
+  <tr><td class="tg-yw4l">MPEG4</td><td class="tg-yw4l">MPEG-4 file with H.264 encoding (systems with Windows 7 or later, or Mac OS X 10.7 and later) - .mp4 or .m4v </td></tr>
+  <tr><td class="tg-yw4l">Uncompressed AVI</td><td class="tg-yw4l">Uncompressed AVI file with RGB24 video.</td></tr>
+  <tr><td class="tg-yw4l">Indexed AVI</td><td class="tg-yw4l">Uncompressed AVI file with indexed video.</td></tr>
+  <tr><td class="tg-yw4l">Grayscale AVI</td><td class="tg-yw4l">Uncompressed AVI file with grayscale video.</td></tr>
+</table>
+</p><p>Details of each consntant is given in <b>Initiation of constants</b>.</p><pre class="codeinput">    <span class="comment">% AVI encoding profiles (as described in MATLAB(R) documentations:</span>
+    <span class="comment">% +------------------+----------------------------------------------------------+</span>
+    <span class="comment">% | Profile          | Description                                              |</span>
+    <span class="comment">% +------------------+----------------------------------------------------------+</span>
+    <span class="comment">% | Archival         | Motion JPEG 2000 file with lossless compression.         |</span>
+    <span class="comment">% +------------------+----------------------------------------------------------+</span>
+    <span class="comment">% | Motion JPEG AVI  | AVI file using Motion JPEG encoding.                     |</span>
+    <span class="comment">% +------------------+----------------------------------------------------------+</span>
+    <span class="comment">% | Motion JPEG 2000 | Motion JPEG 2000 file.                                   |</span>
+    <span class="comment">% +------------------+----------------------------------------------------------+</span>
+    <span class="comment">% | MPEG4            | MPEG-4 file with H.264 encoding (systems withWindows 7   |</span>
+    <span class="comment">% |                  | or later, or Mac OS X 10.7 and later) - .mp4 or .m4v     |</span>
+    <span class="comment">% +------------------+----------------------------------------------------------+</span>
+    <span class="comment">% | Uncompressed AVI | Uncompressed AVI file with RGB24 video.                  |</span>
+    <span class="comment">% +------------------+----------------------------------------------------------+</span>
+    <span class="comment">% | Indexed AVI      | Uncompressed AVI file with indexed video.                |</span>
+    <span class="comment">% +------------------+----------------------------------------------------------+</span>
+    <span class="comment">% | Grayscale AVI    | Uncompressed AVI file with grayscale video.              |</span>
+    <span class="comment">% +------------------+----------------------------------------------------------+</span>
+    <span class="keyword">persistent</span> DEFAULT_RATE;
+    <span class="keyword">persistent</span> DEFAULT_QUALITY;
+    <span class="keyword">persistent</span> AVI_PROFILE;
+    <span class="keyword">persistent</span> ASPECT_RATIO;
+    <span class="keyword">persistent</span> AVI_QUALITY;
+
+    <span class="comment">% Initiation of constants.</span>
+    <span class="keyword">if</span> ~isempty(DEFAULT_RATE) || <span class="keyword">...</span>
+            ~isempty(DEFAULT_QUALITY) || <span class="keyword">...</span>
+            ~isempty(AVI_PROFILE)
+
+        DEFAULT_RATE = uint8(24);            <span class="comment">% 24 fps; HD standard.</span>
+        DEFAULT_QUALITY = uint16(720);       <span class="comment">% HD 720p.</span>
+        AVI_PROFILE = <span class="string">'Uncompressed AVI'</span>;    <span class="comment">% Standard for RGB24 video.</span>
+        ASPECT_RATIO = [16 9];               <span class="comment">% Standard HD video aspect.</span>
+        AVI_QUALITY = uint8(100);  <span class="comment">% Comparative quality of images in %.</span>
+
+    <span class="keyword">end</span>
+</pre><h2>Verification of parameters.<a name="4"></a></h2><p>Checking the existence of essential parameters.</p><pre class="codeinput">    <span class="comment">% A graphical object given?</span>
+    <span class="keyword">if</span> ~exist(<span class="string">'object'</span>, <span class="string">'var'</span>)
+
+        <span class="comment">% Apprently not! Generate an error message.</span>
+        errordlg(sprintf( <span class="keyword">...</span>
+            [<span class="string">'Implementation Error:\n'</span> <span class="keyword">...</span>
+             <span class="string">'   No graphical object was given.\n'</span><span class="keyword">...</span>
+             <span class="string">'   The process is terminated prematurely.'</span>]))
+
+         <span class="comment">% Nothing else to do here until the user learns how to use the</span>
+         <span class="comment">% application. So function is closed.</span>
+         <span class="keyword">return</span>  <span class="comment">% Function terminated.</span>
+
+
+    <span class="comment">% Is the path to save the file given? if not, ask the user for it.</span>
+    <span class="keyword">elseif</span> ~exist(<span class="string">'path'</span>, <span class="string">'var'</span>)
+
+        <span class="comment">% Ask the user for a file name.</span>
+        [avi_name, avi_path] = uiputfile(<span class="string">'*.avi'</span>, <span class="keyword">...</span>
+                                         <span class="string">'Save video file as'</span>);
+
+
+        <span class="comment">% Cancelled?</span>
+        <span class="keyword">if</span> avi_name == 0 || avi_path == 0
+            <span class="keyword">return</span> <span class="comment">% Cancelled by user.</span>
+        <span class="keyword">end</span>
+
+
+        <span class="comment">% Create a single string of the absolute path for saving the</span>
+        <span class="comment">% final output file.</span>
+        path = strcat(avi_path, avi_name);
+
+
+        <span class="comment">% Testing the viability of the path.</span>
+        <span class="comment">%</span>
+        <span class="comment">% For instance, does the user have sufficient permission to write</span>
+        <span class="comment">% in this directory? or is the disk healthy?</span>
+        <span class="keyword">try</span>
+            <span class="comment">% Create and open a file in the given path.</span>
+            test_file = fopen(path, <span class="string">'w'</span>);
+
+            <span class="comment">% Write into the file.</span>
+            fprintf(test_file,<span class="string">'testing the file.'</span>);
+
+            <span class="comment">% Close the file object.</span>
+            fclose(test_file);
+
+            <span class="comment">% Does what it says! Deletes the test file.</span>
+            delete(path)
+
+        <span class="keyword">catch</span> exception
+            <span class="comment">% There has been a problem with writing files in the given</span>
+            <span class="comment">% path; most likely something to do with ownership or</span>
+            <span class="comment">% permissions - but you never know! So the actual message</span>
+            <span class="comment">% generated by MATLAB(R) is displayed.</span>
+            errordlg(sprintf([<span class="string">'I/O Error:\n'</span> <span class="keyword">...</span>
+                  <span class="string">'   %s \n'</span> <span class="keyword">...</span>
+                  <span class="string">'   The process is terminated prematurely.'</span>],<span class="keyword">...</span>
+                  exception.message), exception.identifier)
+
+            <span class="comment">% Nothing else to do here until I/O problem is solved.</span>
+            <span class="keyword">return</span>  <span class="comment">% Function terminated.</span>
+        <span class="keyword">end</span> <span class="comment">% try (file path test)</span>
+
+
+    <span class="keyword">end</span>  <span class="comment">% if (Essential parameters)</span>
+</pre><img vspace="5" hspace="5" src="exportAvi_01.png" alt=""> <p>Now checking the status non-essential paramenters.</p><p><b>Note</b>: <tt>str2double</tt> is faster than <tt>str2num</tt>. The former throws an error if the variable passed is a mix of numbers and characters. The latter on the other hand, checks (through iteration) for the existence of non-numeric characters, and if any exists, it returns an empty array.</p><pre class="codeinput">    <span class="keyword">try</span>
+
+        <span class="comment">% Check if |framerate| is implemented.</span>
+        <span class="keyword">if</span> ~exist(<span class="string">'framerate'</span>, <span class="string">'var'</span>)
+            <span class="comment">% |framerate| not implemented. So the default is invoked.</span>
+            framerate = DEFAULT_RATE;
+
+
+        <span class="comment">% Check if the |framerate| given is a string object.</span>
+        <span class="keyword">elseif</span> isa(framerate, <span class="string">'char'</span>)
+            <span class="comment">% Framerate is given as a string object. It is converted into</span>
+            <span class="comment">% double. For more see section intro.</span>
+            tmp = str2double(framerate);
+            framerate = uint8(tmp);
+
+
+        <span class="comment">% If none of the above apply = The user has done everything right:</span>
+        <span class="keyword">else</span>
+
+            <span class="comment">% Convert |framerate| into an unsigned 8-bit integer.</span>
+            framerate = uint8(framerate);
+
+        <span class="keyword">end</span>  <span class="comment">% if (framerate)</span>
+
+
+        <span class="comment">% Check if |quality| is implemented.</span>
+        <span class="keyword">if</span> ~exist(<span class="string">'quality'</span>, <span class="string">'var'</span>)
+            <span class="comment">% |quality| not implemented. So the default is invoked.</span>
+            quality = DEFAULT_QUALITY;
+
+
+        <span class="comment">% Check if |quality| is given as a string object.</span>
+        <span class="keyword">elseif</span> isa(quality, <span class="string">'char'</span>)
+            <span class="comment">% Framerate is given as a string object. It is converted into</span>
+            <span class="comment">% double. For more see section intro.</span>
+            tmp = str2double(quality);
+            quality = uint16(tmp);
+
+
+        <span class="comment">% If none of the above apply = The user has done everything right:</span>
+        <span class="keyword">else</span>
+
+            <span class="comment">% Convert |quality| into an unsigned 16-bit integer.</span>
+            quality = uint16(quality);
+
+        <span class="keyword">end</span>  <span class="comment">% if (quality)</span>
+
+    <span class="keyword">catch</span> exception
+        <span class="comment">% Most likely induced by passing a mixture of strings and numbers</span>
+        <span class="comment">% to |str2double| - but you never know! So the actual message</span>
+        <span class="comment">% generated by MATLAB(R) is displayed.</span>
+        errordlg(sprintf([<span class="string">'Input Error:\n'</span> <span class="keyword">...</span>
+                          <span class="string">'   %s \n'</span> <span class="keyword">...</span>
+                          <span class="string">'   The process is terminated prematurely.'</span>],<span class="keyword">...</span>
+                          exception.message), exception.identifier)
+
+        <span class="comment">% Nothing else to do here until the user learns how to use the</span>
+        <span class="comment">% application. So function is closed.</span>
+        <span class="keyword">return</span> <span class="comment">% Function terminated.</span>
+
+    <span class="keyword">end</span>  <span class="comment">% try (non-essential vars)</span>
+
+
+
+    <span class="keyword">try</span>
+        avi_object = VideoWriter(path, AVI_PROFILE);
+        avi_object.FrameRate = framerate;
+        aviobj.Quality = AVI_QUALITY;
+
+        vid_length = Nfile / str2num(answer{1});
+
+        vid_FPS = str2num(answer{1});
+
+        vid_qual = str2num(answer{2});
+
+        vid_scf = str2num(answer{3});
+
+    <span class="keyword">catch</span> merr
+        errordlg(sprintf( <span class="keyword">...</span>
+            <span class="string">'Please follow previous steps in proper order!\n%s'</span>, <span class="keyword">...</span>
+        merr.message), merr.identifier)
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> Nfile == 0
+            errordlg(<span class="string">'No images selected'</span>)
+    <span class="keyword">else</span>
+        <span class="keyword">try</span>
+            open(aviobj)
+            wb = waitbar(0, <span class="string">'Please wait...'</span>);
+            <span class="keyword">for</span> i = 1:Nfile
+                img = imread(strcat(file_path, file_name{i}));
+                <span class="keyword">if</span> vid_scf ~= 1
+                    img = imresize(img, vid_scf);
+                <span class="keyword">end</span>
+                writeVideo(aviobj, img);
+                <span class="comment">% Preview image</span>
+                <span class="keyword">if</span> mod(i, round(Nfile/10)) == 1
+                    imshow(img)
+                    title(sprintf(<span class="string">'Preview image %d/%d'</span>, i, Nfile))
+                    uistack(wb, <span class="string">'top'</span>)
+                <span class="keyword">end</span>
+                waitbar(i/Nfile, wb);
+            <span class="keyword">end</span>
+            delete(wb)
+            close(aviobj);
+        <span class="keyword">catch</span> merr
+            errordlg(sprintf( <span class="keyword">...</span>
+                <span class="string">'Please follow previous steps in proper order!\n%s'</span>, <span class="keyword">...</span>
+                merr.message), merr.identifier)
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+</pre><pre class="codeinput"><span class="keyword">end</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+function [  ] = exportAvi( object, path, framerate, quality )
+%EXPORTAVI Summary of this function goes here
+%   Detailed explanation goes here
+
+    %% Defining constants
+    % *Persistent*:
+    % |persistent| constants are used so that once a place is allocated to
+    % these constants on the memory, it is held for as long as the 
+    % application is open. It differs to |global| in that these constants
+    % are not available outside this function. However, it optimises the 
+    % application in that it eliminates the need for the reintroduction of 
+    % these constants every time the function in invoked. It also makes the
+    % use of RAM more efficient by ensuring consecutive allocations where 
+    % possible. These variables are additionally useful if the code is
+    % converted into C. 
+    %
+    % AVI encoding profiles (as described in MATLAB(R) documentations:
+    % 
+    % <html>
+    % <style type="text/css">
+    % .tg  {border-collapse:collapse;border-spacing:0;border-color:#999;margin:0px auto;}
+    % .tg td{font-family:Arial, sans-serif;font-size:11px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:#999;color:#444;background-color:#F7FDFA;}
+    % .tg th{font-family:Arial, sans-serif;font-size:11px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:#999;color:#fff;background-color:#26ADE4;}
+    % .tg .tg-yw4l{vertical-align:top}
+    % </style>
+    % <table class="tg">
+    %   <tr><th class="tg-yw4l">Profile</th><th class="tg-yw4l">Description</th></tr>
+    %   <tr><td class="tg-yw4l">Archival</td><td class="tg-yw4l">Motion JPEG 2000 file with lossless compression.</td></tr>
+    %   <tr><td class="tg-yw4l">Motion JPEG AVI</td><td class="tg-yw4l">AVI file using Motion JPEG encoding.</td></tr>
+    %   <tr><td class="tg-yw4l">Motion JPEG 2000</td><td class="tg-yw4l">Motion JPEG 2000 file.</td></tr>
+    %   <tr><td class="tg-yw4l">MPEG4</td><td class="tg-yw4l">MPEG-4 file with H.264 encoding (systems with Windows 7 or later, or Mac OS X 10.7 and later) - .mp4 or .m4v </td></tr>
+    %   <tr><td class="tg-yw4l">Uncompressed AVI</td><td class="tg-yw4l">Uncompressed AVI file with RGB24 video.</td></tr>
+    %   <tr><td class="tg-yw4l">Indexed AVI</td><td class="tg-yw4l">Uncompressed AVI file with indexed video.</td></tr>
+    %   <tr><td class="tg-yw4l">Grayscale AVI</td><td class="tg-yw4l">Uncompressed AVI file with grayscale video.</td></tr>
+    % </table>
+    % </html>
+    % 
+    % Details of each consntant is given in *Initiation of constants*. 
+    
+    % AVI encoding profiles (as described in MATLAB(R) documentations:
+    % +REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH+REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH+
+    % | Profile          | Description                                              |
+    % +REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH+REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH+
+    % | Archival         | Motion JPEG 2000 file with lossless compression.         |
+    % +REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH+REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH+
+    % | Motion JPEG AVI  | AVI file using Motion JPEG encoding.                     |
+    % +REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH+REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH+
+    % | Motion JPEG 2000 | Motion JPEG 2000 file.                                   |
+    % +REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH+REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH+
+    % | MPEG4            | MPEG-4 file with H.264 encoding (systems withWindows 7   |
+    % |                  | or later, or Mac OS X 10.7 and later) - .mp4 or .m4v     |
+    % +REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH+REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH+
+    % | Uncompressed AVI | Uncompressed AVI file with RGB24 video.                  |
+    % +REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH+REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH+
+    % | Indexed AVI      | Uncompressed AVI file with indexed video.                |
+    % +REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH+REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH+
+    % | Grayscale AVI    | Uncompressed AVI file with grayscale video.              |
+    % +REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH+REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH+
+    persistent DEFAULT_RATE;
+    persistent DEFAULT_QUALITY;
+    persistent AVI_PROFILE;
+    persistent ASPECT_RATIO;
+    persistent AVI_QUALITY;
+    
+    % Initiation of constants. 
+    if ~isempty(DEFAULT_RATE) || ...
+            ~isempty(DEFAULT_QUALITY) || ...
+            ~isempty(AVI_PROFILE)
+        
+        DEFAULT_RATE = uint8(24);            % 24 fps; HD standard.        
+        DEFAULT_QUALITY = uint16(720);       % HD 720p.        
+        AVI_PROFILE = 'Uncompressed AVI';    % Standard for RGB24 video.
+        ASPECT_RATIO = [16 9];               % Standard HD video aspect.
+        AVI_QUALITY = uint8(100);  % Comparative quality of images in %.
+        
+    end
+    
+        
+    %% Verification of parameters.
+    % Checking the existence of essential parameters.
+ 
+    % A graphical object given?
+    if ~exist('object', 'var')
+        
+        % Apprently not! Generate an error message.
+        errordlg(sprintf( ...
+            ['Implementation Error:\n' ...
+             '   No graphical object was given.\n'...
+             '   The process is terminated prematurely.']))
+         
+         % Nothing else to do here until the user learns how to use the
+         % application. So function is closed. 
+         return  % Function terminated. 
+     
+         
+    % Is the path to save the file given? if not, ask the user for it.
+    elseif ~exist('path', 'var')
+        
+        % Ask the user for a file name. 
+        [avi_name, avi_path] = uiputfile('*.avi', ...
+                                         'Save video file as');
+            
+                                     
+        % Cancelled? 
+        if avi_name == 0 || avi_path == 0   
+            return % Cancelled by user.            
+        end
+            
+        
+        % Create a single string of the absolute path for saving the
+        % final output file. 
+        path = strcat(avi_path, avi_name);
+        
+        
+        % Testing the viability of the path.
+        %
+        % For instance, does the user have sufficient permission to write
+        % in this directory? or is the disk healthy? 
+        try
+            % Create and open a file in the given path. 
+            test_file = fopen(path, 'w'); 
+            
+            % Write into the file. 
+            fprintf(test_file,'testing the file.'); 
+            
+            % Close the file object.
+            fclose(test_file);
+            
+            % Does what it says! Deletes the test file.
+            delete(path)
+            
+        catch exception
+            % There has been a problem with writing files in the given
+            % path; most likely something to do with ownership or
+            % permissions - but you never know! So the actual message
+            % generated by MATLAB(R) is displayed.
+            errordlg(sprintf(['I/O Error:\n' ...
+                  '   %s \n' ...
+                  '   The process is terminated prematurely.'],...
+                  exception.message), exception.identifier)
+              
+            % Nothing else to do here until I/O problem is solved. 
+            return  % Function terminated. 
+        end % try (file path test)
+        
+        
+    end  % if (Essential parameters)
+    
+    %%
+    % Now checking the status non-essential paramenters.
+    %
+    % *Note*: |str2double| is faster than |str2num|. The former
+    % throws an error if the variable passed is a mix of numbers 
+    % and characters. The latter on the other hand, checks
+    % (through iteration) for the existence of non-numeric 
+    % characters, and if any exists, it returns an empty array.
+    try
+        
+        % Check if |framerate| is implemented.
+        if ~exist('framerate', 'var')
+            % |framerate| not implemented. So the default is invoked.
+            framerate = DEFAULT_RATE;
+            
+            
+        % Check if the |framerate| given is a string object.
+        elseif isa(framerate, 'char')
+            % Framerate is given as a string object. It is converted into
+            % double. For more see section intro.
+            tmp = str2double(framerate);
+            framerate = uint8(tmp);
+        
+            
+        % If none of the above apply = The user has done everything right:  
+        else
+            
+            % Convert |framerate| into an unsigned 8-bit integer.  
+            framerate = uint8(framerate);
+            
+        end  % if (framerate)
+
+        
+        % Check if |quality| is implemented.
+        if ~exist('quality', 'var')
+            % |quality| not implemented. So the default is invoked.
+            quality = DEFAULT_QUALITY;
+        
+            
+        % Check if |quality| is given as a string object.
+        elseif isa(quality, 'char')
+            % Framerate is given as a string object. It is converted into
+            % double. For more see section intro.
+            tmp = str2double(quality);
+            quality = uint16(tmp);
+            
+            
+        % If none of the above apply = The user has done everything right:  
+        else
+            
+            % Convert |quality| into an unsigned 16-bit integer.
+            quality = uint16(quality);
+            
+        end  % if (quality)
+     
+    catch exception  
+        % Most likely induced by passing a mixture of strings and numbers
+        % to |str2double| - but you never know! So the actual message
+        % generated by MATLAB(R) is displayed.
+        errordlg(sprintf(['Input Error:\n' ...
+                          '   %s \n' ...
+                          '   The process is terminated prematurely.'],...
+                          exception.message), exception.identifier)
+        
+        % Nothing else to do here until the user learns how to use the
+        % application. So function is closed. 
+        return % Function terminated. 
+        
+    end  % try (non-essential vars)
+    
+    
+    
+    try            
+        avi_object = VideoWriter(path, AVI_PROFILE);               
+        avi_object.FrameRate = framerate;
+        aviobj.Quality = AVI_QUALITY;
+        
+        vid_length = Nfile / str2num(answer{1});
+        
+        vid_FPS = str2num(answer{1});
+        
+        vid_qual = str2num(answer{2});
+        
+        vid_scf = str2num(answer{3});
+        
+    catch merr
+        errordlg(sprintf( ...
+            'Please follow previous steps in proper order!\n%s', ...
+        merr.message), merr.identifier)
+    end 
+            
+    if Nfile == 0
+            errordlg('No images selected')
+    else
+        try 
+            open(aviobj)
+            wb = waitbar(0, 'Please wait...');
+            for i = 1:Nfile
+                img = imread(strcat(file_path, file_name{i}));
+                if vid_scf ~= 1
+                    img = imresize(img, vid_scf);
+                end
+                writeVideo(aviobj, img);
+                % Preview image
+                if mod(i, round(Nfile/10)) == 1
+                    imshow(img)
+                    title(sprintf('Preview image %d/%d', i, Nfile))
+                    uistack(wb, 'top')
+                end
+                waitbar(i/Nfile, wb);
+            end
+            delete(wb)
+            close(aviobj);
+        catch merr
+            errordlg(sprintf( ...
+                'Please follow previous steps in proper order!\n%s', ...
+                merr.message), merr.identifier)
+        end
+    end
+            
+
+end
+
+##### SOURCE END #####
+--></body></html>
